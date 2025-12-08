@@ -1,0 +1,88 @@
+@startuml
+left to right direction
+
+' -------------------- ACTORES --------------------
+
+actor Paciente
+actor Medico
+actor Usuario
+actor "Administrador del Sistema" as Admin
+actor "Sistemas Externos" as SE
+
+
+' -------------------- CASOS DE USO --------------------
+Rectangle "Sistema" {
+usecase UC_reg as "Registrarse"
+usecase UC_login as "Iniciar sesión"
+
+usecase UC_hm_view as "Acceder a historial médico"
+usecase UC_hm_fill as "Completar historial médico"
+usecase UC_hm_update as "Actualizar historial médico"
+
+usecase UC_treat as "Asignar tratamiento"
+
+usecase UC_consult as "Asistir a consulta"
+usecase UC_video as "Acceder a videollamada"
+
+usecase UC_cita as "Agendar cita"
+usecase UC_cancel as "Cancelar cita"
+usecase UC_valid_disp as "Validar disponibilidad médico"
+
+usecase UC_sync as "Sincronizar datos clínicos"
+
+usecase UC_gest_disp as "Gestionar disponibilidad y horarios"
+usecase UC_valid_day as "Validar horario de día"
+usecase UC_set_schedule as "Establecer horario"
+
+usecase UC_gest_citas as "Gestionar citas asignadas"
+
+usecase UC_super as "Supervisar uso del sistema"
+usecase UC_reports as "Generar informes"
+
+usecase UC_gest_users as "Gestionar usuarios"
+usecase UC_del_user as "Eliminar usuario"
+usecase UC_assign_role as "Asignar rol de médico"
+usecase UC_create_admin as "Crear administrador del sistema"
+}
+
+' -------------------- RELACIONES DE ACTORES --------------------
+
+Usuario -- UC_reg
+Usuario -- UC_login
+
+Paciente -- UC_hm_fill
+Paciente -- UC_consult
+Paciente -- UC_gest_citas
+Paciente -- UC_cita
+
+Medico -- UC_hm_view
+Medico -- UC_consult
+Medico -- UC_treat
+Medico -- UC_gest_disp
+
+Admin -- UC_gest_users
+Admin -- UC_reports
+Admin -- UC_super
+
+SE -- UC_sync
+SE -- UC_hm_fill
+
+' -------------------- INCLUDE / EXTEND --------------------
+
+UC_consult --> UC_video : <<include>>
+
+UC_cita --> UC_valid_disp : <<include>>
+
+UC_hm_view <-- UC_hm_update : <<extend>>
+UC_gest_disp <-- UC_cancel : <<extend>>
+UC_gest_citas <-- UC_cancel : <<extend>>
+
+UC_gest_disp <-- UC_set_schedule : <<extend>>
+UC_cancel <-- UC_valid_day : <<extend>>
+UC_set_schedule --> UC_valid_day : <<include>>
+
+UC_gest_users <-- UC_del_user : <<extends>>
+UC_gest_users <-- UC_assign_role : <<extends>>
+UC_gest_users <-- UC_create_admin : <<extends>>
+
+@enduml

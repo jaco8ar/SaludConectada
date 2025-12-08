@@ -1,0 +1,55 @@
+@startuml
+
+class "Sistemas externos"
+class Sistema
+class "Administrador del Sistema"{
+  str: permisos
+}
+class Informe
+class Usuario{
+  str: cedula
+  str: nombre
+  
+}
+class "Historial Médico"
+class Médico{
+  str: especialidad
+}
+class Paciente
+class Horario
+class Disponibilidad
+class Consulta
+class Videollamada
+class Cita
+
+Usuario <|-- Paciente
+Usuario <|-- Médico
+Usuario <|-- "Administrador del Sistema"
+
+"Sistemas externos" "0..*" -- "1" Sistema
+
+Sistema "1" -- "1..*" "Administrador del Sistema"
+"Administrador del Sistema" -- Informe
+
+
+"Administrador del Sistema" "1..*" -- "0..*" Usuario 
+
+Cita "0..*"  -- "1" Disponibilidad
+
+Médico "1" -- "1" Horario
+Médico "1" -- "1" Disponibilidad
+Médico "1" -- "0..*" Consulta
+Médico "1" -- "1" Videollamada
+Médico "0..*" -- "0..*" "Historial Médico"
+
+Paciente "1" -- "1" "Historial Médico"
+Paciente "1" -- "0..*" Consulta
+Paciente "1" -- "0..*" Cita 
+Paciente "1" -- "0..*" Videollamada
+
+Consulta "1..*" --  "0..*" Informe 
+Consulta "1" -- "1" Videollamada
+Consulta "1" -- "1" Cita
+
+Horario "1" -- "1" Disponibilidad
+@enduml
