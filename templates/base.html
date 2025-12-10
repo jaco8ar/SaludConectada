@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Salud Conectada</title>
+</head>
+<body>
+  <header>
+    <h1>Salud Conectada</h1>
+    <nav>
+      {% if user.is_authenticated %}
+        Hola, {{ user.first_name|default:user.username }} ({{ user.get_role_display }})
+        |
+        <a href="{% url 'accounts:home' %}">Inicio</a>
+        |
+        <a href="{% url 'accounts:logout' %}">Cerrar sesión</a>
+      {% else %}
+        <a href="{% url 'accounts:login' %}">Iniciar sesión</a> |
+        <a href="{% url 'accounts:register' %}">Registrarse</a>
+      {% endif %}
+    </nav>
+    <hr>
+  </header>
+
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

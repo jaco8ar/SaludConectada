@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Página de inicio</h2>
+
+  {% if user.is_authenticated %}
+    <p>Estás autenticado como <strong>{{ user.get_role_display }}</strong>.</p>
+
+    {% if user.role == "PATIENT" %}
+      <ul>
+        <li><a href="{% url 'scheduling:patient_appointments' %}">Mis citas</a></li>
+        <!-- Más adelante: historial, videollamadas, etc. -->
+      </ul>
+    {% elif user.role == "DOCTOR" %}
+      <ul>
+        <li><a href="{% url 'scheduling:doctor_appointments' %}">Citas como médico</a></li>
+        <!-- Más adelante: gestión de horarios, historial de pacientes, etc. -->
+      </ul>
+    {% elif user.role == "ADMIN" %}
+      <ul>
+        <li><a href="/admin/">Panel de administración Django</a></li>
+        <!-- Más adelante: dashboard de supervisión, reportes, etc. -->
+      </ul>
+    {% endif %}
+
+  {% else %}
+    <p>Para usar la plataforma, inicia sesión o regístrate como paciente.</p>
+  {% endif %}
+{% endblock %}

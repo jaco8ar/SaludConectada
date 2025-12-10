@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Citas como médico</h2>
+
+  {% if appointments %}
+    <table border="1" cellpadding="4">
+      <tr>
+        <th>Paciente</th>
+        <th>Fecha y hora</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+      {% for appt in appointments %}
+        <tr>
+          <td>{{ appt.patient }}</td>
+          <td>{{ appt.scheduled_datetime }}</td>
+          <td>{{ appt.get_status_display }}</td>
+          <td>
+            {% if appt.status != "CANCELED" %}
+              <a href="{% url 'scheduling:cancel_appointment' appt.pk %}">Cancelar</a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No tienes citas asignadas.</p>
+  {% endif %}
+{% endblock %}
