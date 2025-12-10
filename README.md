@@ -227,10 +227,92 @@ Accesos rápidos:
 
 ---
 
-# 📌 Roadmap sugerido
+## 🆕 Actualizaciones Recientes (Refinamientos Importantes)
 
-- Gestión de disponibilidad de horarios para médicos  
-- Prevención de solapamientos en citas  
-- Mejora visual basada en mockups  
-- Generación de reportes PDF / Excel  
-- Integración real de videollamadas (WebRTC / Twilio / Jitsi)  
+### ✔️ Validaciones y mejoras en Registro
+- El correo electrónico ahora es **único en toda la plataforma**.
+- El formulario de registro muestra errores por campo y errores generales:
+  - Usuario ya existente
+  - Correo ya registrado
+  - Contraseñas que no coinciden
+- Los valores de los campos se conservan al fallar el registro (excepto contraseñas).
+
+### ✔️ Validaciones y mejoras en Login
+- Se muestran mensajes claros cuando:
+  - Las credenciales no son correctas
+  - La cuenta está inactiva o bloqueada
+  - Falta llenar un campo obligatorio
+- El campo de usuario conserva su valor si el login falla.
+
+---
+
+## ⏰ Sistema de Disponibilidad Médica y Agenda por "Slots"
+
+El sistema ahora usa un modelo más realista y robusto para gestionar horarios médicos y evitar solapamientos.
+
+### ✔️ Duración fija de cada cita: **20 minutos**
+
+### ✔️ Los pacientes seleccionan un *slot* definido, no una hora libre al azar
+Ejemplo:
+- `08:00 – 08:20`
+- `08:20 – 08:40`
+- `08:40 – 09:00`
+
+### ✔️ Generación automática de slots por día según disponibilidad del médico
+Los médicos configuran:
+- Día de la semana  
+- Hora de inicio  
+- Hora de fin  
+
+El sistema crea bloques consecutivos de 20 minutos.
+
+### ✔️ Reglas estrictas contra solapamientos
+- Un paciente no puede tomar un slot ya ocupado.
+- Dos citas no pueden ocurrir al mismo tiempo para el mismo médico.
+- Se valida que los horarios estén dentro de la disponibilidad real del médico.
+
+### ✔️ Visualización inteligente
+Al crear una cita:
+- El paciente elige médico y fecha.
+- El sistema muestra **solo los slots disponibles reales**.
+- El usuario puede retroceder sin perder los datos ya seleccionados.
+
+---
+
+## 🔐 Reglas adicionales para Gestión de Roles (Admin)
+
+### ✔️ 1. No permitir que un admin se cambie su propio rol
+Prevención de pérdida accidental de privilegios.
+
+### ✔️ 2. No permitir cambiar el rol de un médico si tiene citas futuras activas
+Un médico no puede convertirse en paciente o admin si:
+- Tiene citas programadas a futuro
+- Dichas citas no están canceladas
+
+### ✔️ 3. Un usuario convertido a médico debe tener disponibilidad mínima
+Si un admin convierte un usuario a médico:
+- Se crea automáticamente disponibilidad básica (L–V, 08:00–12:00)
+- El médico podrá ajustarla luego
+
+---
+
+## 👥 Usuarios de prueba disponibles
+
+Puedes usar estas cuentas para navegar el sistema según cada rol:
+
+### 🔸 Administrador
+- **Usuario:** `pipe`  
+- **Contraseña:** `123`
+
+### 🔸 Médico
+- **Usuario:** `medico1`  
+- **Contraseña:** `Doctor2025`
+
+### 🔸 Paciente
+- **Usuario:** `carlosdiaz`  
+- **Contraseña:** `Testing2025`
+
+---
+
+
+
