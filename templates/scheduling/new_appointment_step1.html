@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Nueva cita – Paso 1</h2>
+  <p>Selecciona el médico y la fecha para ver los horarios disponibles.</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Buscar horarios</button>
+  </form>
+
+  <p>
+    <a href="{% url 'scheduling:patient_appointments' %}">Volver a mis citas</a>
+  </p>
+{% endblock %}

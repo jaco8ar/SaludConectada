@@ -93,3 +93,46 @@ class DoctorAvailabilityForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+from django import forms
+from django.utils import timezone
+
+from accounts.models import User
+from .models import Appointment, DoctorAvailability
+
+
+class AppointmentSearchForm(forms.Form):
+    """
+    Paso 1: el paciente elige médico y fecha.
+    """
+    doctor = forms.ModelChoiceField(
+        queryset=User.objects.filter(role=User.Roles.DOCTOR),
+        label="Médico",
+    )
+    date = forms.DateField(
+        label="Fecha",
+        widget=forms.DateInput(attrs={"type": "date"}),
+    )
+
+
+class AppointmentSlotForm(forms.Form):
+    """
+    Paso 2: el paciente elige un slot concreto y escribe el motivo.
+    """
+    slot = forms.ChoiceField(label="Horario disponible")
+    reason = forms.CharField(
+        label="Motivo de la consulta",
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        slots = kwargs.pop("slots", [])
+        super().__init__(*args, **kwargs)
+
+        choices = []
+        for start, end in slots:
+            value = start.isoformat()
+            label = f"{start.time().strftime('%H:%M')} - {end.time().strftime('%H:%M')}"
+            choices.append((value, label))
+
+        self.fields["slot"].choices = choices

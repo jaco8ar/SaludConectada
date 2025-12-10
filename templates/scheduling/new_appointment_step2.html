@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Nueva cita – Paso 2</h2>
+
+  <p>
+    <strong>Médico:</strong> {{ doctor }}<br>
+    <strong>Fecha:</strong> {{ date }}
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <!-- Preservamos los datos de contexto por si hace falta reenviarlos -->
+    <input type="hidden" name="doctor" value="{{ doctor.id }}">
+    <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}">
+
+    {{ form.as_p }}
+
+    <button type="submit">Confirmar cita</button>
+  </form>
+
+  <p>
+    <a href="{% url 'scheduling:new_appointment_step1' %}">Cambiar médico o fecha</a>
+  </p>
+{% endblock %}

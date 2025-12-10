@@ -3,39 +3,127 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
-
+from django.urls import reverse
+from django.utils import timezone
+from datetime import datetime
 from accounts.decorators import role_required
 from accounts.models import User
-from .forms import PatientAppointmentForm, DoctorAvailabilityForm
+from .forms import (
+    AppointmentSearchForm,
+    AppointmentSlotForm,
+    DoctorAvailabilityForm,
+)
 from .models import Appointment, DoctorAvailability
-
+from .utils import get_available_slots_for_doctor_and_date
 
 @role_required(User.Roles.PATIENT)
 def patient_appointments(request):
     """
-    El paciente ve sus citas y puede crear nuevas.
-    Más adelante podríamos separar la creación en otra vista.
+    Lista de citas del paciente.
+    La creación ahora se hace en un flujo separado por slots.
     """
     appointments = (
         Appointment.objects
         .filter(patient=request.user)
-        .order_by("-scheduled_datetime")
+        .select_related("doctor")
+        .order_by("scheduled_datetime")
     )
+    return render(request, "scheduling/patient_appointments.html", {"appointments": appointments})
+
+@role_required(User.Roles.PATIENT)
+def new_appointment_step1(request):
+    """
+    Paso 1: el paciente elige médico y fecha.
+    """
+    if request.method == "POST":
+        form = AppointmentSearchForm(request.POST)
+        if form.is_valid():
+            doctor = form.cleaned_data["doctor"]
+            date = form.cleaned_data["date"]
+            return redirect(
+                f"{reverse('scheduling:new_appointment_step2')}?doctor={doctor.pk}&date={date.isoformat()}"
+            )
+    else:
+        form = AppointmentSearchForm()
+
+    return render(request, "scheduling/new_appointment_step1.html", {"form": form})
+
+@role_required(User.Roles.PATIENT)
+def new_appointment_step2(request):
+    """
+    Paso 2: el paciente ve los slots disponibles y selecciona uno.
+    También escribe el motivo de la consulta.
+    """
+    doctor_id = request.GET.get("doctor") or request.POST.get("doctor")
+    date_str = request.GET.get("date") or request.POST.get("date")
+
+    if not doctor_id or not date_str:
+        messages.error(request, "Faltan datos para crear la cita. Vuelve a seleccionar médico y fecha.")
+        return redirect("scheduling:new_appointment_step1")
+
+    doctor = get_object_or_404(User, pk=doctor_id, role=User.Roles.DOCTOR)
+
+    try:
+        date = datetime.fromisoformat(date_str).date()
+    except ValueError:
+        messages.error(request, "La fecha seleccionada no es válida.")
+        return redirect("scheduling:new_appointment_step1")
+
+    # Calculamos slots disponibles
+    slots = get_available_slots_for_doctor_and_date(doctor, date)
+
+    if not slots:
+        messages.info(
+            request,
+            "No hay horarios disponibles para ese médico en la fecha seleccionada. "
+            "Elige otra fecha o médico."
+        )
+        return redirect("scheduling:new_appointment_step1")
 
     if request.method == "POST":
-        form = PatientAppointmentForm(request.POST)
+        form = AppointmentSlotForm(request.POST, slots=slots)
         if form.is_valid():
-            form.save(patient=request.user)
+            slot_value = form.cleaned_data["slot"]
+            reason = form.cleaned_data["reason"]
+
+            try:
+                slot_start = datetime.fromisoformat(slot_value)
+                slot_start = timezone.make_aware(slot_start, timezone.get_current_timezone()) \
+                    if timezone.is_naive(slot_start) else slot_start
+            except ValueError:
+                messages.error(request, "El slot seleccionado no es válido.")
+                return redirect("scheduling:new_appointment_step1")
+
+            # Defensa extra: verificar que el slot siga disponible
+            latest_slots = get_available_slots_for_doctor_and_date(doctor, date)
+            if not any(s[0] == slot_start for s in latest_slots):
+                messages.error(
+                    request,
+                    "El horario seleccionado ya no está disponible. "
+                    "Vuelve a seleccionar un horario."
+                )
+                return redirect(
+                    f"{reverse('scheduling:new_appointment_step2')}?doctor={doctor.pk}&date={date.isoformat()}"
+                )
+
+            # Crear la cita
+            appointment = Appointment.objects.create(
+                patient=request.user,
+                doctor=doctor,
+                scheduled_datetime=slot_start,
+                reason=reason,
+            )
             messages.success(request, "Cita creada correctamente.")
             return redirect("scheduling:patient_appointments")
     else:
-        form = PatientAppointmentForm()
+        form = AppointmentSlotForm(slots=slots)
 
     context = {
-        "appointments": appointments,
+        "doctor": doctor,
+        "date": date,
         "form": form,
     }
-    return render(request, "scheduling/patient_appointments.html", context)
+    return render(request, "scheduling/new_appointment_step2.html", context)
 
 
 @role_required(User.Roles.DOCTOR)

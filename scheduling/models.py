@@ -4,10 +4,12 @@ from django.db import models
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from datetime import timedelta
 
 
 User = settings.AUTH_USER_MODEL
-
+APPOINTMENT_SLOT_MINUTES = 20
+APPOINTMENT_SLOT_DELTA = timedelta(minutes=APPOINTMENT_SLOT_MINUTES)
 
 class Appointment(models.Model):
     class Status(models.TextChoices):
