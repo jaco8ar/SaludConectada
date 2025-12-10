@@ -13,4 +13,36 @@
   <p>
     <a href="{% url 'scheduling:patient_appointments' %}">Volver a mis citas</a>
   </p>
+
+  {% if doctors_availability %}
+    <hr>
+    <h3>Disponibilidad actual de los médicos</h3>
+    <table border="1" cellpadding="4">
+      <tr>
+        <th>Médico</th>
+        <th>Disponibilidad semanal</th>
+      </tr>
+      {% for item in doctors_availability %}
+        <tr>
+          <td>{{ item.doctor }}</td>
+          <td>
+            {% if item.days %}
+              <ul>
+                {% for d in item.days %}
+                  <li>
+                    <strong>{{ d.day }}:</strong>
+                    {{ d.slots|join:", " }}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <em>Sin disponibilidad configurada.</em>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No hay médicos con disponibilidad configurada.</p>
+  {% endif %}
 {% endblock %}

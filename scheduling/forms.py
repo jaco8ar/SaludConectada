@@ -1,6 +1,5 @@
 from django import forms
 from django.utils import timezone
-
 from accounts.models import User
 from .models import Appointment, DoctorAvailability
 
@@ -94,12 +93,6 @@ class DoctorAvailabilityForm(forms.ModelForm):
 
         return cleaned_data
 
-from django import forms
-from django.utils import timezone
-
-from accounts.models import User
-from .models import Appointment, DoctorAvailability
-
 
 class AppointmentSearchForm(forms.Form):
     """
@@ -113,6 +106,12 @@ class AppointmentSearchForm(forms.Form):
         label="Fecha",
         widget=forms.DateInput(attrs={"type": "date"}),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        today = timezone.localdate()
+        # Evitar fechas pasadas en el selector
+        self.fields["date"].widget.attrs["min"] = today.isoformat()
 
 
 class AppointmentSlotForm(forms.Form):

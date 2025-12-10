@@ -15,6 +15,8 @@ from .forms import (
 )
 from .models import Appointment, DoctorAvailability
 from .utils import get_available_slots_for_doctor_and_date
+from collections import defaultdict
+
 
 @role_required(User.Roles.PATIENT)
 def patient_appointments(request):
@@ -34,7 +36,21 @@ def patient_appointments(request):
 def new_appointment_step1(request):
     """
     Paso 1: el paciente elige médico y fecha.
+    Además mostramos la disponibilidad semanal típica de los médicos.
     """
+    # 1) Prellenar con lo que venga de GET (para cuando volvemos del paso 2)
+    initial = {}
+    doctor_id = request.GET.get("doctor")
+    date_str = request.GET.get("date")
+
+    if doctor_id:
+        initial["doctor"] = doctor_id
+    if date_str:
+        try:
+            initial["date"] = datetime.fromisoformat(date_str).date()
+        except ValueError:
+            pass
+
     if request.method == "POST":
         form = AppointmentSearchForm(request.POST)
         if form.is_valid():
@@ -44,9 +60,43 @@ def new_appointment_step1(request):
                 f"{reverse('scheduling:new_appointment_step2')}?doctor={doctor.pk}&date={date.isoformat()}"
             )
     else:
-        form = AppointmentSearchForm()
+        form = AppointmentSearchForm(initial=initial)
 
-    return render(request, "scheduling/new_appointment_step1.html", {"form": form})
+    # 2) Construir disponibilidad típica de cada médico
+    doctors = (
+        User.objects
+        .filter(role=User.Roles.DOCTOR)
+        .prefetch_related("availabilities")
+    )
+
+    doctors_availability = []
+    for doctor in doctors:
+        # Solo disponibilidades activas
+        avail_qs = doctor.availabilities.filter(is_active=True).order_by("weekday", "start_time")
+        day_map = defaultdict(list)  # { "Lunes": ["08:00–12:00", ...], ... }
+
+        for avail in avail_qs:
+            label = f"{avail.start_time.strftime('%H:%M')}–{avail.end_time.strftime('%H:%M')}"
+            day_map[avail.get_weekday_display()].append(label)
+
+        days = [
+            {"day": day, "slots": ranges}
+            for day, ranges in day_map.items()
+        ]
+
+        doctors_availability.append(
+            {
+                "doctor": doctor,
+                "days": days,
+            }
+        )
+
+    context = {
+        "form": form,
+        "doctors_availability": doctors_availability,
+    }
+    return render(request, "scheduling/new_appointment_step1.html", context)
+
 
 @role_required(User.Roles.PATIENT)
 def new_appointment_step2(request):
