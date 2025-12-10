@@ -6,6 +6,8 @@ from accounts.models import User
 from clinical.models import Consultation
 from scheduling.models import Appointment
 from django.shortcuts import get_object_or_404, redirect, render
+from scheduling.models import DoctorAvailability
+from datetime import time
 
 
 @role_required(User.Roles.PATIENT)
@@ -141,26 +143,73 @@ def reports_placeholder(request):
 
 @role_required(User.Roles.ADMIN)
 def manage_users(request):
-    """
-    Pantalla para que el administrador gestione usuarios y roles.
-    No modifica is_staff / is_superuser, solo el campo de dominio 'role'.
-    """
     users = User.objects.all().order_by("id")
+
+    # Construimos (user, form) para el GET
+    user_forms = [
+        (user, UserRoleForm(initial={"role": user.role}))
+        for user in users
+    ]
 
     if request.method == "POST":
         user_id = request.POST.get("user_id")
-        user = get_object_or_404(User, pk=user_id)
+        target_user = get_object_or_404(User, pk=user_id)
 
-        form = UserRoleForm(request.POST, instance=user)
+        form = UserRoleForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, f"Rol actualizado para {user.username}.")
+            new_role = form.cleaned_data["role"]
+
+            # 1) Evitar que un admin se auto-degrade
+            if target_user == request.user and new_role != User.Roles.ADMIN:
+                messages.error(
+                    request,
+                    "No puedes cambiar tu propio rol a uno distinto de Administrador."
+                )
+                return redirect("dashboard:manage_users")
+
+            # 2) Si lo estamos convirtiendo en MÉDICO, asegurar disponibilidad mínima
+            if new_role == User.Roles.DOCTOR and target_user.role != User.Roles.DOCTOR:
+                has_active_avail = DoctorAvailability.objects.filter(
+                    doctor=target_user,
+                    is_active=True,
+                ).exists()
+
+                if not has_active_avail:
+                    default_days = [
+                        DoctorAvailability.Weekday.MONDAY,
+                        DoctorAvailability.Weekday.TUESDAY,
+                        DoctorAvailability.Weekday.WEDNESDAY,
+                        DoctorAvailability.Weekday.THURSDAY,
+                        DoctorAvailability.Weekday.FRIDAY,
+                    ]
+                    for day in default_days:
+                        DoctorAvailability.objects.create(
+                            doctor=target_user,
+                            weekday=day,
+                            start_time=time(8, 0),
+                            end_time=time(12, 0),
+                            is_active=True,
+                        )
+                    messages.info(
+                        request,
+                        "El usuario ahora es Médico. "
+                        "Se ha creado una disponibilidad básica de Lunes a Viernes, 08:00–12:00. "
+                        "El médico podrá ajustarla luego en su panel."
+                    )
+
+            # Aplicar cambio de rol
+            target_user.role = new_role
+            target_user.save()
+            messages.success(request, "Rol actualizado correctamente.")
             return redirect("dashboard:manage_users")
 
-    # Para el GET (o si el POST no fue válido), armamos pares (user, form)
-    user_forms = [(u, UserRoleForm(instance=u)) for u in users]
+        # Si el form no es válido, caería aquí (poco probable)
+        messages.error(request, "El formulario enviado no es válido.")
+        return redirect("dashboard:manage_users")
 
     context = {
         "user_forms": user_forms,
     }
     return render(request, "dashboard/manage_users.html", context)
+
+

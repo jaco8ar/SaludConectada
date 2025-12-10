@@ -28,12 +28,17 @@
           <td>{{ user.email|default:"-" }}</td>
           <td>{{ user.get_role_display }}</td>
           <td>
-            <form method="post" style="margin: 0;">
-              {% csrf_token %}
-              <input type="hidden" name="user_id" value="{{ user.id }}">
-              {{ form.role }}  {# o simplemente {{ form }} si quieres todo el form #}
-              <button type="submit">Guardar</button>
-            </form>
+            {% if user.id == request.user.id %}
+              <!-- No permitimos cambiar nuestro propio rol -->
+              <em>No puedes modificar tu propio rol.</em>
+            {% else %}
+              <form method="post" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user.id }}">
+                {{ form.role }}  {# o simplemente {{ form }} si quieres todo el form #}
+                <button type="submit">Guardar</button>
+              </form>
+            {% endif %}
           </td>
         </tr>
       {% endfor %}
