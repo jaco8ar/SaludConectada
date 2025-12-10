@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Gestión de usuarios y roles</h2>
+
+  <p>
+    Desde aquí puedes cambiar el rol funcional de los usuarios
+    (Paciente, Médico, Administrador). Esto no afecta los permisos
+    internos del admin de Django (is_staff / is_superuser).
+  </p>
+
+  {% if user_forms %}
+    <table border="1" cellpadding="4">
+      <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Rol actual</th>
+        <th>Cambiar rol</th>
+      </tr>
+
+      {% for user, form in user_forms %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.get_full_name|default:"-" }}</td>
+          <td>{{ user.email|default:"-" }}</td>
+          <td>{{ user.get_role_display }}</td>
+          <td>
+            <form method="post" style="margin: 0;">
+              {% csrf_token %}
+              <input type="hidden" name="user_id" value="{{ user.id }}">
+              {{ form.role }}  {# o simplemente {{ form }} si quieres todo el form #}
+              <button type="submit">Guardar</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No hay usuarios registrados.</p>
+  {% endif %}
+{% endblock %}

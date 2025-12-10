@@ -1,8 +1,7 @@
 from django.shortcuts import render
-
 from django.contrib import messages
 from django.shortcuts import render
-
+from .forms import UserRoleForm
 from accounts.decorators import role_required
 from accounts.models import User
 from clinical.models import Consultation
@@ -140,3 +139,28 @@ def reports_placeholder(request):
     }
     return render(request, "dashboard/reports.html", context)
 
+@role_required(User.Roles.ADMIN)
+def manage_users(request):
+    """
+    Pantalla para que el administrador gestione usuarios y roles.
+    No modifica is_staff / is_superuser, solo el campo de dominio 'role'.
+    """
+    users = User.objects.all().order_by("id")
+
+    if request.method == "POST":
+        user_id = request.POST.get("user_id")
+        user = get_object_or_404(User, pk=user_id)
+
+        form = UserRoleForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Rol actualizado para {user.username}.")
+            return redirect("dashboard:manage_users")
+
+    # Para el GET (o si el POST no fue válido), armamos pares (user, form)
+    user_forms = [(u, UserRoleForm(instance=u)) for u in users]
+
+    context = {
+        "user_forms": user_forms,
+    }
+    return render(request, "dashboard/manage_users.html", context)

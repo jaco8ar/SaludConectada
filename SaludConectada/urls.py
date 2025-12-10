@@ -23,6 +23,6 @@ urlpatterns = [
     path("", include("accounts.urls")),
     path("", include("scheduling.urls")),
     path("", include("clinical.urls")),
-    path("admin", include("dashboard.urls"))
+    path("admin/", include("dashboard.urls"))
 
 ]
