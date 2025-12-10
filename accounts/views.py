@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect
 from .forms import PatientSignUpForm
 from .models import User
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
 def home(request):
     return render(request, "home.html")
@@ -32,4 +33,10 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         # Más adelante podemos redirigir según rol (paciente, médico, admin)
         return "/"
+
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("accounts:home")
 
