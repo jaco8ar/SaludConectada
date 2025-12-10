@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from datetime import date as date_cls
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
@@ -37,19 +37,19 @@ def new_appointment_step1(request):
     """
     Paso 1: el paciente elige médico y fecha.
     Además mostramos la disponibilidad semanal típica de los médicos.
+    Si venimos del paso 2 con ?doctor=&date=, se precargan esos valores.
     """
-    # 1) Prellenar con lo que venga de GET (para cuando volvemos del paso 2)
+    # --- 1) Leer posibles valores desde GET para precargar el form ---
     initial = {}
     doctor_id = request.GET.get("doctor")
     date_str = request.GET.get("date")
 
     if doctor_id:
         initial["doctor"] = doctor_id
+
     if date_str:
-        try:
-            initial["date"] = datetime.fromisoformat(date_str).date()
-        except ValueError:
-            pass
+        # NO parseamos, dejamos el string tal cual ("2025-12-22")
+        initial["date"] = date_str
 
     if request.method == "POST":
         form = AppointmentSearchForm(request.POST)
