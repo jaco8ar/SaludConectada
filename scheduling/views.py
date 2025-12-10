@@ -14,7 +14,10 @@ from .forms import (
     DoctorAvailabilityForm,
 )
 from .models import Appointment, DoctorAvailability
-from .utils import get_available_slots_for_doctor_and_date
+from .utils import (
+    get_available_slots_for_doctor_and_date,
+    get_availability_over_range,
+)
 from collections import defaultdict
 
 
@@ -129,6 +132,9 @@ def new_appointment_step2(request):
             "Elige otra fecha o médico."
         )
         return redirect("scheduling:new_appointment_step1")
+    
+        # Mini-calendario: próximos 14 días desde la fecha seleccionada
+    availability_calendar = get_availability_over_range(doctor, date, days=14)
 
     if request.method == "POST":
         form = AppointmentSlotForm(request.POST, slots=slots)
@@ -172,6 +178,7 @@ def new_appointment_step2(request):
         "doctor": doctor,
         "date": date,
         "form": form,
+        "availability_calendar": availability_calendar,
     }
     return render(request, "scheduling/new_appointment_step2.html", context)
 

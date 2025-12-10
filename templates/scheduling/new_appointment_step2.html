@@ -1,28 +1,65 @@
-{% extends "base.html" %} {% block content %}
-<h2>Nueva cita – Paso 2</h2>
+{% extends "base.html" %}
 
-<p>
-  <strong>Médico:</strong> {{ doctor }}<br />
-  <strong>Fecha:</strong> {{ date }}
-</p>
+{% block content %}
+  <h2>Nueva cita – Paso 2</h2>
 
-<form method="post">
-  {% csrf_token %}
-  <!-- Preservamos los datos de contexto por si hace falta reenviarlos -->
-  <input type="hidden" name="doctor" value="{{ doctor.id }}" />
-  <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}" />
+  <p>
+    <strong>Médico:</strong> {{ doctor }}<br>
+    <strong>Fecha seleccionada:</strong> {{ date|date:'l j \\d\\e F' }}
+  </p>
 
-  {{ form.as_p }}
+  {% if availability_calendar %}
+    <h3>Días cercanos con disponibilidad</h3>
+    <ul>
+      {% for d, count in availability_calendar %}
+        <li>
+          {% if count > 0 %}
+            <a href="{% url 'scheduling:new_appointment_step2' %}?doctor={{ doctor.id }}&date={{ d|date:'Y-m-d' }}">
+              {{ d|date:'l j \\d\\e F' }}
+            </a>
+            – <strong>{{ count }} horario{{ count|pluralize }}</strong>
+            {% if d == date %}
+              <em>(día actual)</em>
+            {% endif %}
+          {% else %}
+            <span style="color: #888;">
+              {{ d|date:'l j \\d\\e F' }} – sin horarios
+            </span>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
-  <button type="submit">Confirmar cita</button>
-</form>
+  <h3>Selecciona un horario disponible</h3>
 
-<p>
-  <a
-    href="{% url 'scheduling:new_appointment_step1' %}?doctor={{ doctor.id }}&date={{ date|date:'Y-m-d' }}"
-  >
-    Cambiar médico o fecha
-  </a>
-</p>
+  <form method="post">
+    {% csrf_token %}
+    <!-- Preservamos doctor y fecha seleccionados -->
+    <input type="hidden" name="doctor" value="{{ doctor.id }}">
+    <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}">
 
+    {% if form.slot.field.choices %}
+      <fieldset>
+        <legend>Horarios</legend>
+        <!-- Esto renderiza los radios como una lista -->
+        {{ form.slot }}
+      </fieldset>
+    {% else %}
+      <p>No hay horarios disponibles para este día.</p>
+    {% endif %}
+
+    <p>
+      {{ form.reason.label_tag }}<br>
+      {{ form.reason }}
+    </p>
+
+    <button type="submit">Confirmar cita</button>
+  </form>
+
+  <p>
+    <a href="{% url 'scheduling:new_appointment_step1' %}?doctor={{ doctor.id }}&date={{ date|date:'Y-m-d' }}">
+      Cambiar médico o fecha
+    </a>
+  </p>
 {% endblock %}

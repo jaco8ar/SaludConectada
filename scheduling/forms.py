@@ -118,7 +118,10 @@ class AppointmentSlotForm(forms.Form):
     """
     Paso 2: el paciente elige un slot concreto y escribe el motivo.
     """
-    slot = forms.ChoiceField(label="Horario disponible")
+    slot = forms.ChoiceField(
+        label="Horario disponible",
+        widget=forms.RadioSelect,  # 👈 aquí el cambio importante
+    )
     reason = forms.CharField(
         label="Motivo de la consulta",
         widget=forms.Textarea(attrs={"rows": 3}),
@@ -135,3 +138,4 @@ class AppointmentSlotForm(forms.Form):
             choices.append((value, label))
 
         self.fields["slot"].choices = choices
+

@@ -1,7 +1,6 @@
 from datetime import datetime, time
-
+from datetime import timedelta
 from django.utils import timezone
-
 from .models import Appointment, DoctorAvailability, APPOINTMENT_SLOT_DELTA
 
 
@@ -88,3 +87,18 @@ def get_available_slots_for_doctor_and_date(doctor, date):
     # Ordenamos por inicio de slot
     slots.sort(key=lambda s: s[0])
     return slots
+
+def get_availability_over_range(doctor, start_date, days=14):
+    """
+    Devuelve una lista de tuples (date, num_slots) para el rango:
+    [start_date, start_date + days-1]
+    """
+    results = []
+    current = start_date
+
+    for _ in range(days):
+        slots = get_available_slots_for_doctor_and_date(doctor, current)
+        results.append((current, len(slots)))
+        current = current + timedelta(days=1)
+
+    return results

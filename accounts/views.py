@@ -6,11 +6,12 @@ from .forms import PatientSignUpForm
 from .models import User
 from django.contrib import messages
 from accounts.decorators import role_required
+from django.urls import reverse
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect(get_dashboard_url_for_user(request.user))
     return render(request, "home.html")
-
-
 
 def register_patient(request):
     if request.method == "POST":
@@ -18,8 +19,8 @@ def register_patient(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            # Más adelante redirigiremos a un dashboard por rol
-            return redirect("home")
+            # Ahora redirigimos al dashboard según rol (paciente en este caso)
+            return redirect(get_dashboard_url_for_user(user))
     else:
         form = PatientSignUpForm()
 
@@ -30,12 +31,30 @@ class CustomLoginView(LoginView):
     template_name = "accounts/login.html"
 
     def get_success_url(self):
-        # Más adelante podemos redirigir según rol (paciente, médico, admin)
-        return "/"
+        # Redirigir según rol del usuario logueado
+        return get_dashboard_url_for_user(self.request.user)
+
 
 
 
 def logout_view(request):
     logout(request)
     return redirect("accounts:home")
+
+def get_dashboard_url_for_user(user) -> str:
+    """
+    Devuelve la URL (como string) del dashboard correspondiente al rol del usuario.
+    """
+    if not user.is_authenticated:
+        return reverse("accounts:home")
+
+    if user.role == User.Roles.PATIENT:
+        return reverse("dashboard:patient_dashboard")
+    elif user.role == User.Roles.DOCTOR:
+        return reverse("dashboard:doctor_dashboard")
+    elif user.role == User.Roles.ADMIN:
+        return reverse("dashboard:admin_dashboard")
+
+    # Fallback por si acaso
+    return reverse("accounts:home")
 

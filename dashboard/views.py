@@ -1,11 +1,11 @@
-from django.shortcuts import render
+
 from django.contrib import messages
-from django.shortcuts import render
 from .forms import UserRoleForm
 from accounts.decorators import role_required
 from accounts.models import User
 from clinical.models import Consultation
 from scheduling.models import Appointment
+from django.shortcuts import get_object_or_404, redirect, render
 
 
 @role_required(User.Roles.PATIENT)
