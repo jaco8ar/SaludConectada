@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Videollamada (placeholder)</h2>
+
+  <p>
+    Cita de <strong>{{ appointment.patient }}</strong> con
+    <strong>{{ appointment.doctor }}</strong><br>
+    <strong>Fecha y hora:</strong> {{ appointment.scheduled_datetime }}
+  </p>
+
+  <div style="border: 1px solid #ccc; padding: 1rem; margin-top: 1rem;">
+    <p>
+      Aquí se mostraría la videollamada real (por ejemplo, un iframe o componente
+      de Jitsi/Twilio/WebRTC).
+    </p>
+    <button type="button" disabled>Activar cámara (futuro)</button>
+    <button type="button" disabled>Activar micrófono (futuro)</button>
+    <button type="button" disabled>Finalizar llamada</button>
+  </div>
+
+  {% if user.role == "DOCTOR" %}
+    <p style="margin-top: 1rem;">
+      <a href="{% url 'clinical:manage_consultation' appointment.id %}">
+        Ir a notas de consulta
+      </a>
+    </p>
+  {% endif %}
+{% endblock %}

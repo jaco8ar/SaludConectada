@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Historial de {{ record.patient }}</h2>
+  <p><strong>Cita:</strong> {{ appointment.scheduled_datetime }}</p>
+
+  <ul>
+    <li><strong>Tipo de sangre:</strong> {{ record.blood_type|default:"No registrado" }}</li>
+    <li><strong>Alergias:</strong> {{ record.allergies|default:"No registrado" }}</li>
+    <li><strong>Enfermedades crónicas:</strong> {{ record.chronic_conditions|default:"No registrado" }}</li>
+    <li><strong>Medicamentos actuales:</strong> {{ record.medications|default:"No registrado" }}</li>
+    <li><strong>Notas adicionales:</strong> {{ record.notes|default:"No registrado" }}</li>
+  </ul>
+
+  <p>
+    <a href="{% url 'clinical:manage_consultation' appointment.id %}">
+      Registrar notas de consulta
+    </a>
+  </p>
+{% endblock %}

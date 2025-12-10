@@ -1,42 +1,40 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<h2>Mis citas</h2>
 
-{% block content %}
-  <h2>Mis citas</h2>
+<h3>Crear nueva cita</h3>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Agendar cita</button>
+</form>
 
-  <h3>Crear nueva cita</h3>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Agendar cita</button>
-  </form>
+<hr />
 
-  <hr>
-
-  <h3>Citas existentes</h3>
-  {% if appointments %}
-    <table border="1" cellpadding="4">
-      <tr>
-        <th>Médico</th>
-        <th>Fecha y hora</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
-      {% for appt in appointments %}
-        <tr>
-          <td>{{ appt.doctor }}</td>
-          <td>{{ appt.scheduled_datetime }}</td>
-          <td>{{ appt.get_status_display }}</td>
-          <td>
-            {% if appt.status != "CANCELED" %}
-              <a href="{% url 'scheduling:cancel_appointment' appt.pk %}">Cancelar</a>
-            {% else %}
-              -
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-  {% else %}
-    <p>No tienes citas registradas.</p>
-  {% endif %}
-{% endblock %}
+<h3>Citas existentes</h3>
+{% if appointments %}
+<table border="1" cellpadding="4">
+  <tr>
+    <th>Médico</th>
+    <th>Fecha y hora</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+  </tr>
+  {% for appt in appointments %}
+  <tr>
+    <td>{{ appt.doctor }}</td>
+    <td>{{ appt.scheduled_datetime }}</td>
+    <td>{{ appt.get_status_display }}</td>
+    <td>
+      {% if appt.status != "CANCELED" %}
+      <a href="{% url 'scheduling:cancel_appointment' appt.pk %}">Cancelar</a>
+      |
+      <a href="{% url 'clinical:video_call' appt.pk %}">
+        Entrar a videollamada
+      </a>
+      {% else %} - {% endif %}
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>No tienes citas registradas.</p>
+{% endif %} {% endblock %}

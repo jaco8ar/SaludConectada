@@ -9,7 +9,7 @@
     {% if user.role == "PATIENT" %}
       <ul>
         <li><a href="{% url 'scheduling:patient_appointments' %}">Mis citas</a></li>
-        <!-- Más adelante: historial, videollamadas, etc. -->
+        <li><a href="{% url 'clinical:patient_medical_record' %}">Mi historial médico</a></li>
       </ul>
     {% elif user.role == "DOCTOR" %}
       <ul>

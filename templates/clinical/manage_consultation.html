@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Consulta para {{ appointment.patient }}</h2>
+  <p><strong>Fecha y hora:</strong> {{ appointment.scheduled_datetime }}</p>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar consulta</button>
+  </form>
+
+  <p>
+    <a href="{% url 'clinical:doctor_patient_record' appointment.id %}">
+      Ver historial del paciente
+    </a>
+  </p>
+{% endblock %}

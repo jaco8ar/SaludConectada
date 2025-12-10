@@ -17,12 +17,21 @@
           <td>{{ appt.scheduled_datetime }}</td>
           <td>{{ appt.get_status_display }}</td>
           <td>
-            {% if appt.status != "CANCELED" %}
-              <a href="{% url 'scheduling:cancel_appointment' appt.pk %}">Cancelar</a>
-            {% else %}
-              -
-            {% endif %}
-          </td>
+          {% if appt.status != "CANCELED" %}
+            <a href="{% url 'scheduling:cancel_appointment' appt.pk %}">Cancelar</a>
+            |
+            <a href="{% url 'clinical:video_call' appt.pk %}">
+              Videollamada
+            </a>
+            |
+            <a href="{% url 'clinical:doctor_patient_record' appt.pk %}">
+              Historial
+            </a>
+          {% else %}
+            -
+          {% endif %}
+        </td>
+
         </tr>
       {% endfor %}
     </table>
