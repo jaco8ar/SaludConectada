@@ -2,9 +2,46 @@
 
 {% block content %}
   <h2>Registro de paciente</h2>
+
+  {# Errores generales del formulario (no asociados a un campo concreto) #}
+  {% if form.non_field_errors %}
+    <div style="color: red; margin-bottom: 1em;">
+      <ul>
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    {% for field in form %}
+      <p>
+        {{ field.label_tag }}
+
+        {# Errores específicos de este campo #}
+        {% if field.errors %}
+          <br>
+          <span style="color: red;">
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </span>
+        {% endif %}
+
+        <br>
+        {{ field }}
+
+        {# Texto de ayuda opcional (si lo tiene) #}
+        {% if field.help_text %}
+          <br>
+          <small style="color: #666;">{{ field.help_text|safe }}</small>
+        {% endif %}
+      </p>
+    {% endfor %}
+
     <button type="submit">Registrarme</button>
   </form>
 {% endblock %}

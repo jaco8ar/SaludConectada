@@ -5,6 +5,7 @@ from django.db import models
 
 
 class User(AbstractUser):
+    email = models.EmailField(unique=True)
     class Roles(models.TextChoices):
         PATIENT = "PATIENT", "Paciente"
         DOCTOR = "DOCTOR", "Médico"
