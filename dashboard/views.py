@@ -6,9 +6,9 @@ from accounts.models import User
 from clinical.models import Consultation
 from scheduling.models import Appointment
 from django.shortcuts import get_object_or_404, redirect, render
-from scheduling.models import DoctorAvailability
+from scheduling.models import DoctorAvailability, Appointment 
 from datetime import time
-
+from django.utils import timezone 
 
 @role_required(User.Roles.PATIENT)
 def patient_dashboard(request):
@@ -158,6 +158,7 @@ def manage_users(request):
         form = UserRoleForm(request.POST)
         if form.is_valid():
             new_role = form.cleaned_data["role"]
+            now = timezone.now()
 
             # 1) Evitar que un admin se auto-degrade
             if target_user == request.user and new_role != User.Roles.ADMIN:
@@ -167,7 +168,22 @@ def manage_users(request):
                 )
                 return redirect("dashboard:manage_users")
 
-            # 2) Si lo estamos convirtiendo en MÉDICO, asegurar disponibilidad mínima
+            # 2) Bloquear cambiar a otro rol a un MÉDICO con citas futuras
+            if target_user.role == User.Roles.DOCTOR and new_role != User.Roles.DOCTOR:
+                has_future_appts = Appointment.objects.filter(
+                    doctor=target_user,
+                    scheduled_datetime__gte=now,
+                ).exclude(status=Appointment.Status.CANCELED).exists()
+
+                if has_future_appts:
+                    messages.error(
+                        request,
+                        "No puedes cambiar el rol de este médico porque tiene citas futuras asignadas. "
+                        "Cancela o reasigna esas citas antes de cambiar su rol."
+                    )
+                    return redirect("dashboard:manage_users")
+
+            # 3) Si lo estamos convirtiendo en MÉDICO, asegurar disponibilidad mínima
             if new_role == User.Roles.DOCTOR and target_user.role != User.Roles.DOCTOR:
                 has_active_avail = DoctorAvailability.objects.filter(
                     doctor=target_user,
@@ -197,13 +213,12 @@ def manage_users(request):
                         "El médico podrá ajustarla luego en su panel."
                     )
 
-            # Aplicar cambio de rol
+            # 4) Aplicar cambio de rol
             target_user.role = new_role
             target_user.save()
             messages.success(request, "Rol actualizado correctamente.")
             return redirect("dashboard:manage_users")
 
-        # Si el form no es válido, caería aquí (poco probable)
         messages.error(request, "El formulario enviado no es válido.")
         return redirect("dashboard:manage_users")
 
@@ -211,5 +226,6 @@ def manage_users(request):
         "user_forms": user_forms,
     }
     return render(request, "dashboard/manage_users.html", context)
+
 
 
