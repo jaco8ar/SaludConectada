@@ -7,20 +7,11 @@
     <p>Estás autenticado como <strong>{{ user.get_role_display }}</strong>.</p>
 
     {% if user.role == "PATIENT" %}
-      <ul>
-        <li><a href="{% url 'scheduling:patient_appointments' %}">Mis citas</a></li>
-        <li><a href="{% url 'clinical:patient_medical_record' %}">Mi historial médico</a></li>
-      </ul>
+      <p><a href="{% url 'dashboard:patient_dashboard' %}">Ir a mi panel de paciente</a></p>
     {% elif user.role == "DOCTOR" %}
-      <ul>
-        <li><a href="{% url 'scheduling:doctor_appointments' %}">Citas como médico</a></li>
-        <!-- Más adelante: gestión de horarios, historial de pacientes, etc. -->
-      </ul>
+      <p><a href="{% url 'dashboard:doctor_dashboard' %}">Ir a mi panel de médico</a></p>
     {% elif user.role == "ADMIN" %}
-      <ul>
-        <li><a href="/admin/">Panel de administración Django</a></li>
-        <!-- Más adelante: dashboard de supervisión, reportes, etc. -->
-      </ul>
+      <p><a href="{% url 'dashboard:admin_dashboard' %}">Ir al panel de administrador</a></p>
     {% endif %}
 
   {% else %}

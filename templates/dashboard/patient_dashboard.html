@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Panel del paciente</h2>
+
+  <section>
+    <h3>Accesos rápidos</h3>
+    <ul>
+      <li><a href="{% url 'scheduling:patient_appointments' %}">Mis citas</a></li>
+      <li><a href="{% url 'clinical:patient_medical_record' %}">Mi historial médico</a></li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <section>
+    <h3>Próximas citas</h3>
+    {% if upcoming_appointments %}
+      <ul>
+        {% for appt in upcoming_appointments %}
+          <li>
+            Con {{ appt.doctor }} el {{ appt.scheduled_datetime }}
+            ({{ appt.get_status_display }}) -
+            <a href="{% url 'clinical:video_call' appt.id %}">Videollamada</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No tienes citas próximas.</p>
+    {% endif %}
+  </section>
+
+  <hr>
+
+  <section>
+    <h3>Última consulta</h3>
+    {% if last_consultation %}
+      <p><strong>Fecha:</strong> {{ last_consultation.created_at }}</p>
+      <p><strong>Notas del médico:</strong> {{ last_consultation.doctor_notes|default:"Sin notas" }}</p>
+      <p><strong>Recomendaciones:</strong> {{ last_consultation.recommendations|default:"Sin recomendaciones" }}</p>
+    {% else %}
+      <p>Aún no tienes consultas registradas.</p>
+    {% endif %}
+  </section>
+{% endblock %}

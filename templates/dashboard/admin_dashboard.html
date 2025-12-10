@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Panel del administrador</h2>
+
+  <section>
+    <h3>Resumen de usuarios</h3>
+    <ul>
+      <li>Total usuarios: {{ total_users }}</li>
+      <li>Pacientes: {{ patients_count }}</li>
+      <li>Médicos: {{ doctors_count }}</li>
+      <li>Administradores: {{ admins_count }}</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <section>
+    <h3>Resumen de citas</h3>
+    <p>Total citas: {{ total_appointments }}</p>
+    <ul>
+      {% for label, count in appointments_by_status.items %}
+        <li>{{ label }}: {{ count }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <hr>
+
+  <section>
+    <h3>Acciones administrativas</h3>
+    <ul>
+      <li><a href="{% url 'dashboard:system_usage' %}">Supervisar uso del sistema (placeholder)</a></li>
+      <li><a href="{% url 'dashboard:external_sync' %}">Sincronización con sistemas externos (placeholder)</a></li>
+      <li><a href="{% url 'dashboard:reports' %}">Reportes / descargas (placeholder)</a></li>
+    </ul>
+  </section>
+{% endblock %}

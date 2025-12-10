@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Reportes y descargas (placeholder)</h2>
+
+  <p>
+    En una versión futura se podrían generar archivos PDF/Excel para descargar.
+    Por ahora mostramos una vista previa de datos que podrían formar parte del reporte.
+  </p>
+
+  {% if appointments %}
+    <table border="1" cellpadding="4">
+      <tr>
+        <th>Paciente</th>
+        <th>Médico</th>
+        <th>Fecha y hora</th>
+        <th>Estado</th>
+      </tr>
+      {% for appt in appointments %}
+        <tr>
+          <td>{{ appt.patient }}</td>
+          <td>{{ appt.doctor }}</td>
+          <td>{{ appt.scheduled_datetime }}</td>
+          <td>{{ appt.get_status_display }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No hay citas para mostrar.</p>
+  {% endif %}
+{% endblock %}

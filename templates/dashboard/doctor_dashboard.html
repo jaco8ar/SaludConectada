@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Panel del médico</h2>
+
+  <section>
+    <h3>Accesos rápidos</h3>
+    <ul>
+      <li><a href="{% url 'scheduling:doctor_appointments' %}">Mis citas</a></li>
+      <!-- Más adelante: gestión de horarios, etc. -->
+    </ul>
+  </section>
+
+  <hr>
+
+  <section>
+    <h3>Próximas citas</h3>
+    {% if upcoming_appointments %}
+      <table border="1" cellpadding="4">
+        <tr>
+          <th>Paciente</th>
+          <th>Fecha y hora</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+        {% for appt in upcoming_appointments %}
+          <tr>
+            <td>{{ appt.patient }}</td>
+            <td>{{ appt.scheduled_datetime }}</td>
+            <td>{{ appt.get_status_display }}</td>
+            <td>
+              <a href="{% url 'clinical:video_call' appt.id %}">Videollamada</a> |
+              <a href="{% url 'clinical:doctor_patient_record' appt.id %}">Historial</a> |
+              <a href="{% url 'clinical:manage_consultation' appt.id %}">Notas</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <p>No tienes citas próximas.</p>
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Sincronización con sistemas externos (placeholder)</h2>
+
+  <p>
+    En una versión completa, aquí configuraríamos y ejecutaríamos la
+    sincronización con sistemas de gestión de datos de salud.
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Iniciar sincronización (simulada)</button>
+  </form>
+
+  <p>
+    Por ahora este botón solo muestra un mensaje, pero deja preparado el flujo
+    para integrar la lógica real.
+  </p>
+{% endblock %}
