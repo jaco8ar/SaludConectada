@@ -73,22 +73,56 @@ class PatientAppointmentForm(forms.ModelForm):
 class DoctorAvailabilityForm(forms.ModelForm):
     class Meta:
         model = DoctorAvailability
-        fields = ("weekday", "start_time", "end_time", "is_active")
-        labels = {
-            "weekday": "Día de la semana",
-            "start_time": "Hora de inicio",
-            "end_time": "Hora de fin",
-            "is_active": "Activo",
+        fields = ["weekday", "start_time", "end_time", "is_active"]
+        widgets = {
+            "weekday": forms.Select(),
+            "start_time": forms.TimeInput(
+                format="%H:%M",
+                attrs={
+                    "type": "time",   # selector nativo de hora
+                    "step": 3600,     # 3600s = 1 hora → solo horas en punto
+                    # no ponemos min/max para permitir 24h (madrugada incluida)
+                },
+            ),
+            "end_time": forms.TimeInput(
+                format="%H:%M",
+                attrs={
+                    "type": "time",
+                    "step": 3600,
+                },
+            ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["start_time"].label = "Hora de inicio"
+        self.fields["end_time"].label = "Hora de fin"
+        self.fields["start_time"].help_text = "Selecciona la hora de inicio (solo horas en punto, formato 24h)."
+        self.fields["end_time"].help_text = "Selecciona la hora de fin (solo horas en punto, formato 24h)."
 
     def clean(self):
         cleaned_data = super().clean()
         start = cleaned_data.get("start_time")
         end = cleaned_data.get("end_time")
 
-        if start and end and start >= end:
-            raise forms.ValidationError(
-                "La hora de inicio debe ser menor que la hora de fin."
+        # Validar que haya datos
+        if not start or not end:
+            return cleaned_data
+
+        # 1) La hora de fin debe ser mayor que la de inicio
+        if start >= end:
+            self.add_error("end_time", "La hora de fin debe ser mayor que la de inicio.")
+
+        # 2) Solo horas en punto (minutos = 0, segundos = 0 si aplica)
+        if start.minute != 0 or getattr(start, "second", 0) != 0:
+            self.add_error(
+                "start_time",
+                "La hora de inicio debe ser una hora en punto (por ejemplo 08:00, 14:00, 23:00)."
+            )
+        if end.minute != 0 or getattr(end, "second", 0) != 0:
+            self.add_error(
+                "end_time",
+                "La hora de fin debe ser una hora en punto (por ejemplo 09:00, 15:00, 00:00)."
             )
 
         return cleaned_data

@@ -6,7 +6,27 @@
   <h3>Agregar nueva franja</h3>
   <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
+
+    {% for field in form %}
+      <p>
+        {{ field.label_tag }}<br>
+
+        {% if field.errors %}
+          <span style="color: red;">
+            {% for error in field.errors %}
+              {{ error }}<br>
+            {% endfor %}
+          </span><br>
+        {% endif %}
+
+        {{ field }}
+
+        {% if field.help_text %}
+          <br><small style="color: #666;">{{ field.help_text|safe }}</small>
+        {% endif %}
+      </p>
+    {% endfor %}
+
     <button type="submit">Guardar</button>
   </form>
 
