@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.decorators import role_required
 from accounts.models import User
-from .forms import PatientAppointmentForm
-from .models import Appointment
+from .forms import PatientAppointmentForm, DoctorAvailabilityForm
+from .models import Appointment, DoctorAvailability
 
 
 @role_required(User.Roles.PATIENT)
@@ -86,3 +86,41 @@ def cancel_appointment(request, pk):
         # Admin: por ahora, al home
         return redirect("accounts:home")
 
+@role_required(User.Roles.DOCTOR)
+def doctor_availability(request):
+    """
+    El médico gestiona su disponibilidad semanal.
+    """
+    availabilities = DoctorAvailability.objects.filter(
+        doctor=request.user
+    ).order_by("weekday", "start_time")
+
+    if request.method == "POST":
+        form = DoctorAvailabilityForm(request.POST)
+        if form.is_valid():
+            availability = form.save(commit=False)
+            availability.doctor = request.user
+            availability.save()
+            messages.success(request, "Disponibilidad guardada correctamente.")
+            return redirect("scheduling:doctor_availability")
+    else:
+        form = DoctorAvailabilityForm()
+
+    context = {
+        "availabilities": availabilities,
+        "form": form,
+    }
+    return render(request, "scheduling/doctor_availability.html", context)
+
+
+@role_required(User.Roles.DOCTOR)
+def delete_doctor_availability(request, pk):
+    """
+    El médico puede eliminar una franja de su propia disponibilidad.
+    """
+    availability = get_object_or_404(
+        DoctorAvailability, pk=pk, doctor=request.user
+    )
+    availability.delete()
+    messages.success(request, "Disponibilidad eliminada.")
+    return redirect("scheduling:doctor_availability")

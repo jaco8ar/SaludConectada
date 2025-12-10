@@ -2,7 +2,7 @@ from django import forms
 from django.utils import timezone
 
 from accounts.models import User
-from .models import Appointment
+from .models import Appointment, DoctorAvailability
 
 
 class PatientAppointmentForm(forms.ModelForm):
@@ -20,12 +20,49 @@ class PatientAppointmentForm(forms.ModelForm):
         model = Appointment
         fields = ("doctor", "scheduled_datetime", "reason")
 
-    def clean_scheduled_datetime(self):
-        dt = self.cleaned_data["scheduled_datetime"]
-        # Conversión mínima para que no se creen citas en el pasado
-        if dt < timezone.now():
-            raise forms.ValidationError("La fecha y hora deben ser en el futuro.")
-        return dt
+    def clean(self):
+        cleaned_data = super().clean()
+        doctor = cleaned_data.get("doctor")
+        dt = cleaned_data.get("scheduled_datetime")
+
+        if not doctor or not dt:
+            return cleaned_data
+
+        # 1. No permitir fechas en el pasado
+        if dt <= timezone.now():
+            raise forms.ValidationError(
+                "La fecha y hora deben ser en el futuro."
+            )
+
+        # 2. Verificar disponibilidad del médico (día y franja)
+        weekday = dt.weekday()
+        time = dt.time()
+
+        availability_qs = DoctorAvailability.objects.filter(
+            doctor=doctor,
+            is_active=True,
+            weekday=weekday,
+            start_time__lte=time,
+            end_time__gt=time,  # simplificación: punto en el tiempo dentro del rango
+        )
+
+        if not availability_qs.exists():
+            raise forms.ValidationError(
+                "El médico no tiene disponibilidad configurada para ese día y hora."
+            )
+
+        # 3. Evitar choque con otra cita EXACTAMENTE a la misma fecha/hora
+        conflict_qs = Appointment.objects.filter(
+            doctor=doctor,
+            scheduled_datetime=dt,
+        ).exclude(status=Appointment.Status.CANCELED)
+
+        if conflict_qs.exists():
+            raise forms.ValidationError(
+                "Ya existe una cita para ese médico en esa fecha y hora."
+            )
+
+        return cleaned_data
 
     def save(self, patient, commit=True):
         appointment: Appointment = super().save(commit=False)
@@ -33,3 +70,26 @@ class PatientAppointmentForm(forms.ModelForm):
         if commit:
             appointment.save()
         return appointment
+
+class DoctorAvailabilityForm(forms.ModelForm):
+    class Meta:
+        model = DoctorAvailability
+        fields = ("weekday", "start_time", "end_time", "is_active")
+        labels = {
+            "weekday": "Día de la semana",
+            "start_time": "Hora de inicio",
+            "end_time": "Hora de fin",
+            "is_active": "Activo",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start = cleaned_data.get("start_time")
+        end = cleaned_data.get("end_time")
+
+        if start and end and start >= end:
+            raise forms.ValidationError(
+                "La hora de inicio debe ser menor que la hora de fin."
+            )
+
+        return cleaned_data

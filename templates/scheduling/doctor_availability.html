@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Mi disponibilidad</h2>
+
+  <h3>Agregar nueva franja</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar</button>
+  </form>
+
+  <hr>
+
+  <h3>Franjas existentes</h3>
+  {% if availabilities %}
+    <table border="1" cellpadding="4">
+      <tr>
+        <th>Día</th>
+        <th>Hora inicio</th>
+        <th>Hora fin</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+      </tr>
+      {% for a in availabilities %}
+        <tr>
+          <td>{{ a.get_weekday_display }}</td>
+          <td>{{ a.start_time }}</td>
+          <td>{{ a.end_time }}</td>
+          <td>{{ a.is_active|yesno:"Sí,No" }}</td>
+          <td>
+            <a href="{% url 'scheduling:delete_doctor_availability' a.pk %}">Eliminar</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>No tienes disponibilidad configurada.</p>
+  {% endif %}
+{% endblock %}
