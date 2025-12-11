@@ -16,4 +16,9 @@ urlpatterns = [
         views.delete_doctor_availability,
         name="delete_doctor_availability",
     ),
+    path(
+        "citas/<int:appointment_id>/videollamada/",
+        views.appointment_video_call,
+        name="appointment_video_call",
+    ),
 ]

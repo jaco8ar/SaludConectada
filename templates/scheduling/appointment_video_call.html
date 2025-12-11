@@ -1,0 +1,34 @@
+{# templates/scheduling/appointment_video_call.html #}
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Videollamada de la cita</h2>
+
+  <p>
+    <strong>Médico:</strong> {{ appointment.doctor }}<br>
+    <strong>Paciente:</strong> {{ appointment.patient }}<br>
+    <strong>Fecha y hora:</strong> {{ appointment.scheduled_datetime }}
+  </p>
+
+  {% if appointment.video_call_url %}
+    <p>
+      Si tienes problemas con la vista incrustada, puedes abrir la videollamada
+      en una nueva pestaña:
+      <a href="{{ appointment.video_call_url }}" target="_blank">Abrir en nueva pestaña</a>
+    </p>
+
+    <div style="width: 100%; height: 80vh; border: 1px solid #ccc; margin-top: 1em;">
+      <iframe
+        src="{{ appointment.video_call_url }}"
+        style="width: 100%; height: 100%; border: 0;"
+        allow="camera; microphone; fullscreen; display-capture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  {% else %}
+    <p style="color: red;">
+      No se ha podido generar la sala de videollamada para esta cita.
+      Intenta recargar la página o contacta con soporte.
+    </p>
+  {% endif %}
+{% endblock %}

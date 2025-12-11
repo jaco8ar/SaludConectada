@@ -19,6 +19,7 @@ from .utils import (
     get_availability_over_range,
 )
 from collections import defaultdict
+from django.http import HttpResponseForbidden
 
 
 @role_required(User.Roles.PATIENT)
@@ -111,7 +112,10 @@ def new_appointment_step2(request):
     date_str = request.GET.get("date") or request.POST.get("date")
 
     if not doctor_id or not date_str:
-        messages.error(request, "Faltan datos para crear la cita. Vuelve a seleccionar médico y fecha.")
+        messages.error(
+            request,
+            "Faltan datos para crear la cita. Vuelve a seleccionar médico y fecha."
+        )
         return redirect("scheduling:new_appointment_step1")
 
     doctor = get_object_or_404(User, pk=doctor_id, role=User.Roles.DOCTOR)
@@ -132,8 +136,8 @@ def new_appointment_step2(request):
             "Elige otra fecha o médico."
         )
         return redirect("scheduling:new_appointment_step1")
-    
-        # Mini-calendario: próximos 14 días desde la fecha seleccionada
+
+    # ✅ Mini-calendario: próximos 14 días desde la fecha seleccionada
     availability_calendar = get_availability_over_range(doctor, date, days=14)
 
     if request.method == "POST":
@@ -144,13 +148,16 @@ def new_appointment_step2(request):
 
             try:
                 slot_start = datetime.fromisoformat(slot_value)
-                slot_start = timezone.make_aware(slot_start, timezone.get_current_timezone()) \
-                    if timezone.is_naive(slot_start) else slot_start
+                slot_start = (
+                    timezone.make_aware(slot_start, timezone.get_current_timezone())
+                    if timezone.is_naive(slot_start)
+                    else slot_start
+                )
             except ValueError:
                 messages.error(request, "El slot seleccionado no es válido.")
                 return redirect("scheduling:new_appointment_step1")
 
-            # Defensa extra: verificar que el slot siga disponible
+            # ✅ Defensa extra: verificar que el slot siga disponible
             latest_slots = get_available_slots_for_doctor_and_date(doctor, date)
             if not any(s[0] == slot_start for s in latest_slots):
                 messages.error(
@@ -162,15 +169,23 @@ def new_appointment_step2(request):
                     f"{reverse('scheduling:new_appointment_step2')}?doctor={doctor.pk}&date={date.isoformat()}"
                 )
 
-            # Crear la cita
+            # ✅ Crear la cita
             appointment = Appointment.objects.create(
                 patient=request.user,
                 doctor=doctor,
                 scheduled_datetime=slot_start,
                 reason=reason,
+                # si usas status:
+                # status=Appointment.Status.SCHEDULED,
             )
+
+            # ✅ AHORA sí, generar sala de videollamada
+            appointment.ensure_video_call_url()
+
             messages.success(request, "Cita creada correctamente.")
             return redirect("scheduling:patient_appointments")
+        else:
+            messages.error(request, "Por favor, corrige los errores en el formulario.")
     else:
         form = AppointmentSlotForm(slots=slots)
 
@@ -181,6 +196,7 @@ def new_appointment_step2(request):
         "availability_calendar": availability_calendar,
     }
     return render(request, "scheduling/new_appointment_step2.html", context)
+
 
 
 @role_required(User.Roles.DOCTOR)
@@ -269,3 +285,28 @@ def delete_doctor_availability(request, pk):
     availability.delete()
     messages.success(request, "Disponibilidad eliminada.")
     return redirect("scheduling:doctor_availability")
+
+@role_required(User.Roles.PATIENT, User.Roles.DOCTOR, User.Roles.ADMIN)
+def appointment_video_call(request, appointment_id):
+    """
+    Muestra la videollamada incrustada en un iframe.
+    Solo accesible para el médico o el paciente de la cita (o admin).
+    """
+    appointment = get_object_or_404(Appointment, pk=appointment_id)
+
+    user = request.user
+    if not (
+        user == appointment.patient
+        or user == appointment.doctor
+        or user.role == User.Roles.ADMIN
+    ):
+        return HttpResponseForbidden("No tienes permiso para acceder a esta videollamada.")
+
+    # Aseguramos que haya una sala (por si la cita es vieja)
+    appointment.ensure_video_call_url()
+
+    context = {
+        "appointment": appointment,
+    }
+    return render(request, "scheduling/appointment_video_call.html", context)
+
