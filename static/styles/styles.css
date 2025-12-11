@@ -1,0 +1,121 @@
+/* Base styles for SaludConectada */
+
+:root {
+  --primary-color: #007bff; /* Blue */
+  --primary-hover-color: #0056b3; /* Darker blue */
+  --secondary-color: #f2f6fa; /* Light grayish blue */
+  --text-color: #333; /* Dark gray */
+  --white-color: #ffffff; /* White */
+}
+
+body {
+  font-family: Georgia, serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+header {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  padding: 0.5rem 1rem; /* Reduced padding for smaller header */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+}
+
+header .logo img {
+  height: 40px; /* Adjust logo size */
+  margin-right: 0.5rem;
+}
+
+header .user-info {
+  margin-right: auto;
+  padding-left: 1rem;
+  font-size: 1rem;
+  color: var(--white-color);
+}
+
+header .messages {
+  margin-right: auto;
+  padding-left: 1rem;
+}
+
+header .messages img {
+  height: 40px;
+  opacity: 0.5;
+}
+
+header .messages span {
+  height: 40px;
+  opacity: 0.8;
+}
+
+header nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+header nav button {
+  display: inline-block;
+  background-color: var(--white-color);
+  color: var(--primary-color);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  border: 1px solid var(--primary-color);
+  cursor: pointer;
+}
+
+header nav button:hover {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+footer {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+  padding: 1rem;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  margin: 2rem auto;
+  padding: 1rem;
+  max-width: 1200px;
+  background-color: var(--white-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  background-color: var(--white-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 1px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--primary-hover-color);
+}
