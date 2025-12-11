@@ -5,6 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from .video_calls import create_daily_room_for_appointment
 
 
 User = settings.AUTH_USER_MODEL
@@ -39,6 +40,25 @@ class Appointment(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     canceled_at = models.DateTimeField(null=True, blank=True)
+
+    video_call_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text="Enlace a la sala de videollamada.",
+    )
+
+    def ensure_video_call_url(self, save=True):
+        """
+        Asegura que la cita tiene una sala de videollamada asignada.
+        Ahora usa Daily para crearla si no existe.
+        """
+        if not self.video_call_url:
+            url = create_daily_room_for_appointment(self)
+            if url:
+                self.video_call_url = url
+                if save:
+                    self.save(update_fields=["video_call_url"])
+        return self.video_call_url
 
     def cancel(self):
         """

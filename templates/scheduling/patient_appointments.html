@@ -28,6 +28,15 @@
               -
             {% endif %}
           </td>
+          <!-- <td>
+            {% if appt.video_call_url and appt.status != appt.Status.CANCELED and appt.scheduled_datetime >= now %}
+                <a href="{% url 'scheduling:appointment_video_call' appt.id %}">
+                Unirse a videollamada
+                </a>
+            {% else %}
+                <em>Videollamada no disponible</em>
+            {% endif %}
+          </td> -->
         </tr>
       {% endfor %}
     </table>

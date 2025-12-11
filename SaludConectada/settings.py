@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +26,7 @@ SECRET_KEY = 'django-insecure-rrhz))!qosr8a8!bap4@)top6-_icc7*-6*&9ksr_1b(_d&u=r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://lumarinb.pythonanywhere.com']
 
 
 # Application definition
@@ -136,3 +137,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "accounts.User"
+
+import os
+DAILY_API_KEY = os.environ.get("DAILY_API_KEY", "")
+DAILY_DOMAIN = os.environ.get("DAILY_DOMAIN", "")  # ej: "saludconectada.daily.co"
+DAILY_API_BASE_URL = "https://api.daily.co/v1"
+
+from dotenv import load_dotenv
+# Cargar variables desde .env
+load_dotenv(BASE_DIR / ".env")
