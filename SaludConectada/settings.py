@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-rrhz))!qosr8a8!bap4@)top6-_icc7*-6*&9ksr_1b(_d&u=r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://lumarinb.pythonanywhere.com/']
 
 
 # Application definition
