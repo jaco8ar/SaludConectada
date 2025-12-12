@@ -1,11 +1,111 @@
 {% extends "base.html" %}
+{% load static %}
+
+
 
 {% block content %}
-  <h2>Mi historial médico</h2>
+<div class="medical-record-container">
+    <div class="medical-record-card">
+        <div class="card-header">
+            <h2>Mi historial médico</h2>
+            <p class="subtitle">Complete su información médica para que sus doctores puedan brindarle mejor atención</p>
+        </div>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar</button>
-  </form>
+        <form method="post" class="medical-record-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3 class="section-title">Información básica</h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.blood_type.id_for_label }}" class="form-label">
+                        <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                        </svg>
+                        Tipo de sangre
+                    </label>
+                    {{ form.blood_type }}
+                    {% if form.blood_type.errors %}
+                        <span class="error-message">{{ form.blood_type.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Condiciones médicas</h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.allergies.id_for_label }}" class="form-label">
+                        <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        Alergias
+                    </label>
+                    {{ form.allergies }}
+                    <span class="helper-text">Liste cualquier alergia a medicamentos, alimentos o sustancias</span>
+                    {% if form.allergies.errors %}
+                        <span class="error-message">{{ form.allergies.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.chronic_conditions.id_for_label }}" class="form-label">
+                        <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Condiciones crónicas
+                    </label>
+                    {{ form.chronic_conditions }}
+                    <span class="helper-text">Enumere enfermedades crónicas o condiciones de largo plazo</span>
+                    {% if form.chronic_conditions.errors %}
+                        <span class="error-message">{{ form.chronic_conditions.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.medications.id_for_label }}" class="form-label">
+                        <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                        Medicamentos actuales
+                    </label>
+                    {{ form.medications }}
+                    <span class="helper-text">Incluya nombres de medicamentos, dosis y frecuencia</span>
+                    {% if form.medications.errors %}
+                        <span class="error-message">{{ form.medications.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">Notas adicionales</h3>
+                
+                <div class="form-group">
+                    <label for="{{ form.notes.id_for_label }}" class="form-label">
+                        <svg class="label-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Notas adicionales
+                    </label>
+                    {{ form.notes }}
+                    <span class="helper-text">Información adicional relevante sobre su historial médico</span>
+                    {% if form.notes.errors %}
+                        <span class="error-message">{{ form.notes.errors.0 }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Guardar historial médico
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<link rel="stylesheet" href="{% static 'styles/clinical/patient_medical_record.css' %}">
 {% endblock %}
