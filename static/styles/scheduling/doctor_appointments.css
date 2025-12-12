@@ -1,0 +1,297 @@
+.appointments-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.appointments-header {
+  margin-bottom: 2rem;
+}
+
+.appointments-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* Table Styles */
+.appointments-table-wrapper {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.appointments-table thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.appointments-table thead th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.appointments-table tbody tr {
+  border-bottom: 1px solid #e9ecef;
+  transition: background-color 0.2s ease;
+}
+
+.appointments-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.appointments-table tbody tr.canceled {
+  opacity: 0.6;
+}
+
+.appointments-table tbody td {
+  padding: 1.25rem 1.5rem;
+  vertical-align: middle;
+}
+
+/* Patient Cell */
+.patient-cell {
+  min-width: 200px;
+}
+
+.patient-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.patient-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.patient-name {
+  font-weight: 500;
+  color: #1a1a1a;
+  font-size: 0.938rem;
+}
+
+/* DateTime Cell */
+.datetime-cell {
+  min-width: 180px;
+}
+
+.datetime-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.datetime-info svg {
+  flex-shrink: 0;
+  color: #007bff;
+}
+
+/* Status Cell */
+.status-cell {
+  min-width: 140px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.375rem 0.875rem;
+  border-radius: 20px;
+  font-size: 0.813rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-badge.status-scheduled {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-badge.status-confirmed {
+  background: #e8f5e9;
+  color: #388e3c;
+}
+
+.status-badge.status-completed {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+.status-badge.status-canceled {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* Actions Cell */
+.actions-cell {
+  min-width: 380px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.action-btn svg {
+  flex-shrink: 0;
+}
+
+.video-btn {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+}
+
+.video-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.record-btn {
+  background: #f8f9fa;
+  color: #495057;
+  border-color: #dee2e6;
+}
+
+.record-btn:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+.cancel-btn {
+  background: #fff5f5;
+  color: #dc3545;
+  border-color: #ffcdd2;
+}
+
+.cancel-btn:hover {
+  background: #ffebee;
+  border-color: #ef9a9a;
+  transform: translateY(-1px);
+}
+
+.no-actions {
+  color: #adb5bd;
+  font-size: 1.25rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state svg {
+  color: #dee2e6;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #495057;
+  margin: 0 0 0.5rem 0;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .action-btn span {
+    display: none;
+  }
+
+  .action-btn {
+    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+
+  .actions-cell {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointments-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .appointments-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .appointments-table {
+    min-width: 800px;
+  }
+
+  .appointments-header h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .appointments-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .empty-state {
+    padding: 3rem 1rem;
+  }
+
+  .empty-state svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .empty-state h3 {
+    font-size: 1.25rem;
+  }
+
+  .empty-state p {
+    font-size: 0.875rem;
+  }
+}
