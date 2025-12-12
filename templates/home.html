@@ -1,20 +1,113 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/home.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h2>Página de inicio</h2>
+<div class="home-container">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Consultas Médicas en Línea</h1>
+      <p>Conecta con doctores calificados desde la comodidad de tu hogar. Videollamadas seguras, rápidas y privadas disponibles 24/7.</p>
+      <div class="hero-buttons">
+        <button class="btn btn-primary" onclick="location.href='{% url 'accounts:register' %}'">
+          Comenzar Ahora
+        </button>
+        <button class="btn btn-secondary" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">
+          Saber Más
+        </button>
+      </div>
+    </div>
+  </section>
 
-  {% if user.is_authenticated %}
-    <p>Estás autenticado como <strong>{{ user.get_role_display }}</strong>.</p>
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <h2>¿Por qué elegir Salud Conectada?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Totalmente Seguro</h3>
+        <p>Tus datos médicos están protegidos con encriptación de nivel hospitalario. Tu privacidad es nuestra prioridad.</p>
+      </div>
 
-    {% if user.role == "PATIENT" %}
-      <p><a href="{% url 'dashboard:patient_dashboard' %}">Ir a mi panel de paciente</a></p>
-    {% elif user.role == "DOCTOR" %}
-      <p><a href="{% url 'dashboard:doctor_dashboard' %}">Ir a mi panel de médico</a></p>
-    {% elif user.role == "ADMIN" %}
-      <p><a href="{% url 'dashboard:admin_dashboard' %}">Ir al panel de administrador</a></p>
-    {% endif %}
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Reserva Rápida</h3>
+        <p>Consigue una cita en minutos. Selecciona horario y especialista con facilidad en pocos clics.</p>
+      </div>
 
-  {% else %}
-    <p>Para usar la plataforma, inicia sesión o regístrate como paciente.</p>
-  {% endif %}
+      <div class="feature-card">
+        <div class="feature-icon">👨‍⚕️</div>
+        <h3>Doctores Certificados</h3>
+        <p>Todos nuestros profesionales están verificados y cuentan con credenciales médicas válidas.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">⏰</div>
+        <h3>Disponible 24/7</h3>
+        <p>Accede a consultas en horarios que se adapten a tu agenda. Médicos disponibles siempre.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💾</div>
+        <h3>Historial Médico</h3>
+        <p>Mantén tus registros organizados y accede a tu historial de consultas en cualquier momento.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>Precios Asequibles</h3>
+        <p>Consultas de calidad a precios justos. Sin sorpresas, sin cuotas ocultas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="how-it-works">
+    <h2>Cómo Funciona</h2>
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Regístrate</h3>
+        <p>Crea tu cuenta en minutos con tu información básica de salud.</p>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Elige tu Doctor</h3>
+        <p>Explora perfiles de médicos verificados y elige el especialista que necesitas.</p>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Reserva una Cita</h3>
+        <p>Selecciona una fecha y hora disponible que funcione para ti.</p>
+      </div>
+
+      <div class="step-arrow">→</div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <h3>Consulta en Video</h3>
+        <p>Conéctate a través de videollamada segura en la hora programada.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="about-content">
+      <h2>Acerca de Salud Conectada</h2>
+      <p>Somos una plataforma de telemedicina dedicada a hacer la atención médica más accesible, cómoda y asequible. Nuestro equipo está comprometido con conectar pacientes con profesionales de salud de excelencia.</p>
+      <p>Creemos que el cuidado de la salud no debe tener barreras geográficas ni temporales. Con años de experiencia en tecnología sanitaria, hemos desarrollado una solución confiable para consultas virtuales de calidad.</p>
+    </div>
+  </section>
+</div>
 {% endblock %}

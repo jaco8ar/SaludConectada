@@ -5,51 +5,58 @@
     <title>Salud Conectada</title>
     <link rel="stylesheet" href="/static/styles/base.css" />
     <link rel="stylesheet" href="/static/styles/navbar.css">
+    {% block extra_css %}{% endblock %}
   </head>
   <body>
-    <header>
-      <div class="logo">
-        <img src="/static/img/logo.png" alt="Logo de Salud Conectada" />
-        <h1>Salud Conectada</h1>
-      </div>
+    <header class="main-header">
+    
+			<div class="header-left-group">
+					<div class="logo">
+							<img src="/static/img/logo.png" alt="Logo de Salud Conectada" />
+							<h1>Salud Conectada</h1>
+					</div>
 
-      <div class="user-info">
-        {% if user.is_authenticated %} Hola,
-        {{user.first_name|default:user.username }} ({{ user.get_role_display }})
-        {% endif %}
-      </div>
+					<div class="user-info">
+							{% if user.is_authenticated %} Hola,
+							{{user.first_name|default:user.username }} ({{ user.get_role_display }})
+							{% endif %}
+					</div>
+			</div>
+			
+			{% if not user.is_authenticated %}
+			<nav class="nav-center">
+					<a class="nav-link" onclick="location.href='#features'">
+							Características
+					</a>
+					<a class="nav-link" onclick="location.href='#how-it-works'">
+							Cómo Funciona
+					</a>
+					<a class="nav-link" onclick="location.href='#about'">
+							Acerca de
+					</a>
+			</nav>
+			{% endif %}
 
-      <div class="messages">
-        {% if messages %}
-        <ul>
-          {% for message in messages %}
-          <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-        {% else %}
-        <img src="/static/img/mensajes.png" alt="No hay mensajes" />
-        <span>No hay mensajes</span>
-        {% endif %}
-      </div>
-
-      <nav>
-        {% if user.is_authenticated %}
-        <button onclick="location.href='{% url 'accounts:home' %}'">
-          Inicio
-        </button>
-        <button onclick="location.href='{% url 'accounts:logout' %}'">
-          Cerrar sesión
-        </button>
-        {% else %}
-        <button onclick="location.href='{% url 'accounts:login' %}'">
-          Iniciar sesión
-        </button>
-        <button onclick="location.href='{% url 'accounts:register' %}'">
-          Registrarse
-        </button>
-        {% endif %}
-      </nav>
-    </header>
+			<nav class="nav-right"> 
+					<div class="auth-buttons">
+							{% if user.is_authenticated %}
+									<button onclick="location.href='{% url 'accounts:home' %}'">
+											Inicio
+									</button>
+									<button onclick="location.href='{% url 'accounts:logout' %}'">
+											Cerrar sesión
+									</button>
+							{% else %}
+									<button onclick="location.href='{% url 'accounts:login' %}'">
+											Iniciar sesión
+									</button>
+									<button onclick="location.href='{% url 'accounts:register' %}'">
+											Registrarse
+									</button>
+							{% endif %}
+					</div>
+			</nav>
+		</header>
 
     <main>{% block content %}{% endblock %}</main>
   </body>

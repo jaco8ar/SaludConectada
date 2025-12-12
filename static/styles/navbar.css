@@ -1,5 +1,4 @@
 /* Styles for the top navigation bar */
-
 header {
   background-color: var(--primary-color);
   color: var(--white-color);
@@ -53,7 +52,61 @@ header nav button {
   cursor: pointer;
 }
 
+.header-left-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.nav-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: 0; 
+}
+
+.nav-center {
+    display: flex; 
+    gap: 15px;
+    align-items: center;
+    margin: 0 auto; 
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.nav-center .nav-link{
+    color: var(--white-color);
+}
+
+.nav-center .nav-link:hover {
+    text-decoration: none;
+    transform: scale(1.03);
+    position: relative;
+} 
+
 header nav button:hover {
   background-color: var(--primary-color);
   color: var(--white-color);
+}
+
+
+.main-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+}
+
+
+.nav-left {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-left: auto;
 }
