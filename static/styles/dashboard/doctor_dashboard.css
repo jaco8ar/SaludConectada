@@ -72,6 +72,12 @@
   color: white;
 }
 
+.access-card .card-icon img {
+  width: 24px;
+  height: 24px;
+  filter: brightness(0) invert(1);
+}
+
 .access-card .card-content h3 {
   font-size: 1.125rem;
   font-weight: 600;
