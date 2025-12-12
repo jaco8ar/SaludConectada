@@ -1,60 +1,210 @@
 {% extends "base.html" %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/clinical/doctor_availability.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h2>Mi disponibilidad</h2>
+<div class="availability-container">
+  <div class="page-header">
+    <h1>Mi disponibilidad</h1>
+    <p class="subtitle">Gestiona tus horarios de atención para tus pacientes</p>
+  </div>
 
-  <h3>Agregar nueva franja</h3>
-  <form method="post">
-    {% csrf_token %}
+  <!-- Add New Availability Form -->
+  <div class="card form-card">
+    <div class="card-header">
+      <img src="{% static 'svg/clock-icon-2.svg' %}" class="header-icon" alt="">
+      <h2>Agregar nueva franja horaria</h2>
+    </div>
+    
+    <form method="post" class="availability-form">
+      {% csrf_token %}
+      
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="{{ form.weekday.id_for_label }}" class="field-label">
+            Día de la semana
+            {% if form.weekday.field.required %}
+              <span class="required">*</span>
+            {% endif %}
+          </label>
+          
+          {% if form.weekday.errors %}
+            <div class="field-errors">
+              {% for error in form.weekday.errors %}
+                <div class="error-message">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ error }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          {{ form.weekday }}
+          
+          {% if form.weekday.help_text %}
+            <small class="help-text">{{ form.weekday.help_text|safe }}</small>
+          {% endif %}
+        </div>
 
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
+        <div class="form-field">
+          <label for="{{ form.start_time.id_for_label }}" class="field-label">
+            Hora de inicio
+            {% if form.start_time.field.required %}
+              <span class="required">*</span>
+            {% endif %}
+          </label>
+          
+          {% if form.start_time.errors %}
+            <div class="field-errors">
+              {% for error in form.start_time.errors %}
+                <div class="error-message">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ error }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          {{ form.start_time }}
+          
+          {% if form.start_time.help_text %}
+            <small class="help-text">{{ form.start_time.help_text|safe }}</small>
+          {% endif %}
+        </div>
 
-        {% if field.errors %}
-          <span style="color: red;">
-            {% for error in field.errors %}
-              {{ error }}<br>
+        <div class="form-field">
+          <label for="{{ form.end_time.id_for_label }}" class="field-label">
+            Hora de fin
+            {% if form.end_time.field.required %}
+              <span class="required">*</span>
+            {% endif %}
+          </label>
+          
+          {% if form.end_time.errors %}
+            <div class="field-errors">
+              {% for error in form.end_time.errors %}
+                <div class="error-message">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ error }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          {{ form.end_time }}
+          
+          {% if form.end_time.help_text %}
+            <small class="help-text">{{ form.end_time.help_text|safe }}</small>
+          {% endif %}
+        </div>
+
+        <div class="form-field">
+          <label for="{{ form.is_active.id_for_label }}" class="field-label">
+            Estado
+            {% if form.is_active.field.required %}
+              <span class="required">*</span>
+            {% endif %}
+          </label>
+          
+          {% if form.is_active.errors %}
+            <div class="field-errors">
+              {% for error in form.is_active.errors %}
+                <div class="error-message">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  {{ error }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          {{ form.is_active }}
+          
+          {% if form.is_active.help_text %}
+            <small class="help-text">{{ form.is_active.help_text|safe }}</small>
+          {% endif %}
+        </div>
+      </div>
+
+      <button type="submit" class="btn-primary">
+        <img src="{% static 'svg/add-icon.svg' %}" alt="">
+        Guardar franja horaria
+      </button>
+    </form>
+  </div>
+
+  <!-- Existing Availabilities Table -->
+  <div class="card table-card">
+    <div class="card-header">
+      <img src="{% static 'svg/clipboard-icon.svg' %}" class="header-icon" alt="">
+      <h2>Franjas horarias configuradas</h2>
+    </div>
+
+    {% if availabilities %}
+      <div class="table-wrapper">
+        <table class="availability-table">
+          <thead>
+            <tr>
+              <th>Día de la semana</th>
+              <th>Hora de inicio</th>
+              <th>Hora de fin</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in availabilities %}
+              <tr class="{% if not a.is_active %}inactive-row{% endif %}">
+                <td>
+                  <div class="weekday-cell">
+                    <span class="weekday-label">{{ a.get_weekday_display }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="time-cell">
+                    <img src="{% static 'svg/alert-icon.svg' %}" alt="">
+                    {{ a.start_time }}
+                  </div>
+                </td>
+                <td>
+                  <div class="time-cell">
+                    <img src="{% static 'svg/alert-icon.svg' %}" alt="">
+                    {{ a.end_time }}
+                  </div>
+                </td>
+                <td>
+                  <span class="status-badge {% if a.is_active %}status-active{% else %}status-inactive{% endif %}">
+                    <span class="status-dot"></span>
+                    {{ a.is_active|yesno:"Activo,Inactivo" }}
+                  </span>
+                </td>
+                <td>
+                  <a href="{% url 'scheduling:delete_doctor_availability' a.pk %}" class="btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta franja horaria?');">
+                    <img src="{% static 'svg/trash-icon.svg' %}" alt="">
+                    Eliminar
+                  </a>
+                </td>
+              </tr>
             {% endfor %}
-          </span><br>
-        {% endif %}
-
-        {{ field }}
-
-        {% if field.help_text %}
-          <br><small style="color: #666;">{{ field.help_text|safe }}</small>
-        {% endif %}
-      </p>
-    {% endfor %}
-
-    <button type="submit">Guardar</button>
-  </form>
-
-  <hr>
-
-  <h3>Franjas existentes</h3>
-  {% if availabilities %}
-    <table border="1" cellpadding="4">
-      <tr>
-        <th>Día</th>
-        <th>Hora inicio</th>
-        <th>Hora fin</th>
-        <th>Activo</th>
-        <th>Acciones</th>
-      </tr>
-      {% for a in availabilities %}
-        <tr>
-          <td>{{ a.get_weekday_display }}</td>
-          <td>{{ a.start_time }}</td>
-          <td>{{ a.end_time }}</td>
-          <td>{{ a.is_active|yesno:"Sí,No" }}</td>
-          <td>
-            <a href="{% url 'scheduling:delete_doctor_availability' a.pk %}">Eliminar</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
-  {% else %}
-    <p>No tienes disponibilidad configurada.</p>
-  {% endif %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <img src="{% static 'svg/calendar-empty-icon.svg' %}" class="empty-icon" alt="">
+        <h3>No tienes disponibilidad configurada</h3>
+        <p>Agrega tu primera franja horaria para que los pacientes puedan agendar citas contigo</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
 {% endblock %}
