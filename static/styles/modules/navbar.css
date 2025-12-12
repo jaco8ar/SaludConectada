@@ -26,8 +26,9 @@ header .user-info {
 }
 
 header .messages {
-  margin-right: auto;
-  padding-left: 1rem;
+  
+  margin-right: 0rem;
+  text-align: end;
 }
 
 header .messages img {
@@ -62,7 +63,7 @@ header nav button {
     display: flex;
     gap: 10px;
     align-items: center;
-    margin-left: 0; 
+    margin-left: auto; 
 }
 
 .nav-center {

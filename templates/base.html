@@ -37,24 +37,41 @@
 			</nav>
 			{% endif %}
 
+		
+
 			<nav class="nav-right"> 
-					<div class="auth-buttons">
-							{% if user.is_authenticated %}
-									<button onclick="location.href='{% url 'accounts:home' %}'">
-											Inicio
-									</button>
-									<button onclick="location.href='{% url 'accounts:logout' %}'">
-											Cerrar sesión
-									</button>
-							{% else %}
-									<button onclick="location.href='{% url 'accounts:login' %}'">
-											Iniciar sesión
-									</button>
-									<button onclick="location.href='{% url 'accounts:register' %}'">
-											Registrarse
-									</button>
-							{% endif %}
+				{% if user.is_authenticated %}
+					<div class="messages">
+						{% if messages %}        
+							<ul>          
+								{% for message in messages %}          
+									<li>{{ message }}</li>
+								{% endfor %}        
+							</ul>        
+						{% else %}        
+							
+							<span>No hay mensajes</span>
+						{% endif %}
 					</div>
+				{% endif %}
+
+				<div class="auth-buttons">
+						{% if user.is_authenticated %}
+								<button onclick="location.href='{% url 'accounts:home' %}'">
+										Inicio
+								</button>
+								<button onclick="location.href='{% url 'accounts:logout' %}'">
+										Cerrar sesión
+								</button>
+						{% else %}
+								<button onclick="location.href='{% url 'accounts:login' %}'">
+										Iniciar sesión
+								</button>
+								<button onclick="location.href='{% url 'accounts:register' %}'">
+										Registrarse
+								</button>
+						{% endif %}
+				</div>
 			</nav>
 		</header>
 
