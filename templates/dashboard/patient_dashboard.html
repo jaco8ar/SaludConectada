@@ -1,45 +1,143 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/dashboard/patient_dashboard.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h2>Panel del paciente</h2>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Panel del Paciente</h1>
+    <p class="dashboard-subtitle">Bienvenido a tu espacio de salud personal</p>
+  </div>
 
-  <section>
-    <h3>Accesos rápidos</h3>
-    <ul>
-      <li><a href="{% url 'scheduling:patient_appointments' %}">Mis citas</a></li>
-      <li><a href="{% url 'clinical:patient_medical_record' %}">Mi historial médico</a></li>
-    </ul>
+  <!-- Quick Access Cards -->
+  <section class="quick-access-section">
+    <h2 class="section-title">Accesos Rápidos</h2>
+    <div class="quick-access-grid">
+      <a href="{% url 'scheduling:patient_appointments' %}" class="access-card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div class="card-content">
+          <h3>Mis Citas</h3>
+          <p>Ver y gestionar tus citas médicas</p>
+        </div>
+      </a>
+
+      <a href="{% url 'clinical:patient_medical_record' %}" class="access-card">
+        <div class="card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <div class="card-content">
+          <h3>Historial Médico</h3>
+          <p>Consulta tu historial completo</p>
+        </div>
+      </a>
+    </div>
   </section>
 
-  <hr>
-
-  <section>
-    <h3>Próximas citas</h3>
-    {% if upcoming_appointments %}
-      <ul>
-        {% for appt in upcoming_appointments %}
-          <li>
-            Con {{ appt.doctor }} el {{ appt.scheduled_datetime }}
-            ({{ appt.get_status_display }}) -
-            <a href="{% url 'clinical:video_call' appt.id %}">Videollamada</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No tienes citas próximas.</p>
-    {% endif %}
+  <!-- Upcoming Appointments -->
+  <section class="appointments-section">
+    <h2 class="section-title">Próximas Citas</h2>
+    <div class="appointments-card">
+      {% if upcoming_appointments %}
+        <ul class="appointments-list">
+          {% for appt in upcoming_appointments %}
+            <li class="appointment-item">
+              <div class="appointment-info">
+                <div class="appointment-header">
+                  <div class="doctor-info">
+                    <div class="doctor-avatar">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
+                    </div>
+                    <div>
+                      <h4>Dr. {{ appt.doctor }}</h4>
+                      <span class="appointment-status status-{{ appt.status }}">{{ appt.get_status_display }}</span>
+                    </div>
+                  </div>
+                  <div class="appointment-date">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    {{ appt.scheduled_datetime }}
+                  </div>
+                </div>
+              </div>
+              <a href="{% url 'clinical:video_call' appt.id %}" class="video-call-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+                Unirse a Videollamada
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <p>No tienes citas próximas</p>
+          <a href="{% url 'scheduling:patient_appointments' %}" class="btn-secondary">Agendar Nueva Cita</a>
+        </div>
+      {% endif %}
+    </div>
   </section>
 
-  <hr>
-
-  <section>
-    <h3>Última consulta</h3>
-    {% if last_consultation %}
-      <p><strong>Fecha:</strong> {{ last_consultation.created_at }}</p>
-      <p><strong>Notas del médico:</strong> {{ last_consultation.doctor_notes|default:"Sin notas" }}</p>
-      <p><strong>Recomendaciones:</strong> {{ last_consultation.recommendations|default:"Sin recomendaciones" }}</p>
-    {% else %}
-      <p>Aún no tienes consultas registradas.</p>
-    {% endif %}
+  <!-- Last Consultation -->
+  <section class="consultation-section">
+    <h2 class="section-title">Última Consulta</h2>
+    <div class="consultation-card">
+      {% if last_consultation %}
+        <div class="consultation-content">
+          <div class="consultation-field">
+            <label>Fecha</label>
+            <p>{{ last_consultation.created_at }}</p>
+          </div>
+          
+          <div class="consultation-field">
+            <label>Notas del Médico</label>
+            <p class="consultation-notes">{{ last_consultation.doctor_notes|default:"Sin notas disponibles" }}</p>
+          </div>
+          
+          <div class="consultation-field">
+            <label>Recomendaciones</label>
+            <p class="consultation-recommendations">{{ last_consultation.recommendations|default:"Sin recomendaciones disponibles" }}</p>
+          </div>
+        </div>
+      {% else %}
+        <div class="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <p>Aún no tienes consultas registradas</p>
+        </div>
+      {% endif %}
+    </div>
   </section>
+</div>
 {% endblock %}
