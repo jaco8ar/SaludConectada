@@ -1,46 +1,44 @@
-{% extends "base.html" %}
+{% comment %} {% extends "base.html" %} {% block content %} {% endcomment %}
 
-{% block content %}
-  <h2>Iniciar sesión</h2>
+<link rel="stylesheet" href="/static/styles/base.css" />
+<link rel="stylesheet" href="/static/styles/accounts/login.css" />
 
-  {# Errores generales del formulario (por ejemplo, credenciales incorrectas) #}
-  {% if form.non_field_errors %}
-    <div style="color: red; margin-bottom: 1em;">
-      <ul>
-        {% for error in form.non_field_errors %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+<div class="login-container">
+  <h1>Iniciar sesión</h1>
+
+  {# Errores generales del formulario (por ejemplo, credenciales incorrectas) #} {% if form.non_field_errors %}
+  <div style="color: red; margin-bottom: 1em">
+    <ul>
+      {% for error in form.non_field_errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
   {% endif %}
 
   <form method="post">
-    {% csrf_token %}
+    {% csrf_token %} {% for field in form %}
+    <p>
+      {{ field.label_tag }} {% if field.errors %}
+      <br />
+      <span style="color: red">
+        {% for error in field.errors %} {{ error }}<br />
+        {% endfor %}
+      </span>
+      {% endif %}
 
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}
-
-        {# Errores específicos de este campo (ej: "Este campo es obligatorio") #}
-        {% if field.errors %}
-          <br>
-          <span style="color: red;">
-            {% for error in field.errors %}
-              {{ error }}<br>
-            {% endfor %}
-          </span>
-        {% endif %}
-
-        <br>
-        {{ field }}
-
-        {% if field.help_text %}
-          <br>
-          <small style="color: #666;">{{ field.help_text|safe }}</small>
-        {% endif %}
-      </p>
+      <br />
+      {{ field }} {% if field.help_text %}
+      <br />
+      <small style="color: #666">{{ field.help_text|safe }}</small>
+      {% endif %}
+    </p>
     {% endfor %}
 
     <button type="submit">Entrar</button>
   </form>
-{% endblock %}
+
+  <button onclick="location.href='/'">Regresar a la pantalla principal</button>
+</div>
+
+{% comment %} {% endblock %} {% endcomment %}

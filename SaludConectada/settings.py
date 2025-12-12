@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-rrhz))!qosr8a8!bap4@)top6-_icc7*-6*&9ksr_1b(_d&u=r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://lumarinb.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -138,11 +138,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "accounts.User"
 
-import os
-DAILY_API_KEY = os.environ.get("DAILY_API_KEY", "")
-DAILY_DOMAIN = os.environ.get("DAILY_DOMAIN", "")  # ej: "saludconectada.daily.co"
-DAILY_API_BASE_URL = "https://api.daily.co/v1"
+# import os
+# DAILY_API_KEY = os.environ.get("DAILY_API_KEY", "")
+# DAILY_DOMAIN = os.environ.get("DAILY_DOMAIN", "")  # ej: "saludconectada.daily.co"
+# DAILY_API_BASE_URL = "https://api.daily.co/v1"
 
-from dotenv import load_dotenv
-# Cargar variables desde .env
-load_dotenv(BASE_DIR / ".env")
+# from dotenv import load_dotenv
+# # Cargar variables desde .env
+# load_dotenv(BASE_DIR / ".env")

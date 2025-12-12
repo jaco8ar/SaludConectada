@@ -16,69 +16,6 @@ body {
   color: var(--text-color);
 }
 
-header {
-  background-color: var(--primary-color);
-  color: var(--white-color);
-  padding: 0.5rem 1rem; /* Reduced padding for smaller header */
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-header .logo {
-  display: flex;
-  align-items: center;
-}
-
-header .logo img {
-  height: 40px; /* Adjust logo size */
-  margin-right: 0.5rem;
-}
-
-header .user-info {
-  margin-right: auto;
-  padding-left: 1rem;
-  font-size: 1rem;
-  color: var(--white-color);
-}
-
-header .messages {
-  margin-right: auto;
-  padding-left: 1rem;
-}
-
-header .messages img {
-  height: 40px;
-  opacity: 0.5;
-}
-
-header .messages span {
-  height: 40px;
-  opacity: 0.8;
-}
-
-header nav {
-  display: flex;
-  gap: 0.5rem;
-}
-
-header nav button {
-  display: inline-block;
-  background-color: var(--white-color);
-  color: var(--primary-color);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  margin-left: 0.5rem;
-  font-weight: bold;
-  border: 1px solid var(--primary-color);
-  cursor: pointer;
-}
-
-header nav button:hover {
-  background-color: var(--primary-color);
-  color: var(--white-color);
-}
-
 footer {
   background-color: var(--primary-color);
   color: var(--white-color);

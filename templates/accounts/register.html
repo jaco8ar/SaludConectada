@@ -1,47 +1,42 @@
-{% extends "base.html" %}
+<link rel="stylesheet" href="/static/styles/base.css" />
+<link rel="stylesheet" href="/static/styles/accounts/register.css" />
 
 {% block content %}
-  <h2>Registro de paciente</h2>
+<div class="register-container">
+  <h1>Registro de paciente</h1>
 
-  {# Errores generales del formulario (no asociados a un campo concreto) #}
-  {% if form.non_field_errors %}
-    <div style="color: red; margin-bottom: 1em;">
-      <ul>
-        {% for error in form.non_field_errors %}
-          <li>{{ error }}</li>
-        {% endfor %}
-      </ul>
-    </div>
+  {# Errores generales del formulario (no asociados a un campo concreto) #} {% if form.non_field_errors %}
+  <div style="color: red; margin-bottom: 1em">
+    <ul>
+      {% for error in form.non_field_errors %}
+      <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  </div>
   {% endif %}
 
   <form method="post">
-    {% csrf_token %}
+    {% csrf_token %} {% for field in form %}
+    <p>
+      {{ field.label_tag }} {% if field.errors %}
+      <br />
+      <span style="color: red">
+        {% for error in field.errors %} {{ error }}<br />
+        {% endfor %}
+      </span>
+      {% endif %}
 
-    {% for field in form %}
-      <p>
-        {{ field.label_tag }}
-
-        {# Errores específicos de este campo #}
-        {% if field.errors %}
-          <br>
-          <span style="color: red;">
-            {% for error in field.errors %}
-              {{ error }}<br>
-            {% endfor %}
-          </span>
-        {% endif %}
-
-        <br>
-        {{ field }}
-
-        {# Texto de ayuda opcional (si lo tiene) #}
-        {% if field.help_text %}
-          <br>
-          <small style="color: #666;">{{ field.help_text|safe }}</small>
-        {% endif %}
-      </p>
+      <br />
+      {{ field }} {% if field.help_text %}
+      <br />
+      <small style="color: #666">{{ field.help_text|safe }}</small>
+      {% endif %}
+    </p>
     {% endfor %}
 
     <button type="submit">Registrarme</button>
   </form>
+
+  <button onclick="location.href='/'">Regresar a la pantalla principal</button>
+</div>
 {% endblock %}
