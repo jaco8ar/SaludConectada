@@ -1,46 +1,99 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-  <h2>Mis citas</h2>
+<link rel="stylesheet" href="/static/styles/scheduling/patient_appointments.css">
 
-  <p>
-    <a href="{% url 'scheduling:new_appointment_step1' %}">Nueva cita</a>
-  </p>
+<div class="appointments-container">
+  <div class="appointments-header">
+    <h1>Mis citas</h1>
+    <a href="{% url 'scheduling:new_appointment_step1' %}" class="btn-new-appointment">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Nueva cita
+    </a>
+  </div>
 
   {% if appointments %}
-    <table border="1" cellpadding="4">
-      <tr>
-        <th>Médico</th>
-        <th>Fecha y hora</th>
-        <th>Estado</th>
-        <th>Acciones</th>
-      </tr>
+    <div class="appointments-list">
       {% for appt in appointments %}
-        <tr>
-          <td>{{ appt.doctor }}</td>
-          <td>{{ appt.scheduled_datetime }}</td>
-          <td>{{ appt.get_status_display }}</td>
-          <td>
+        <div class="appointment-card {% if appt.status == 'CANCELED' %}canceled{% endif %}">
+          <div class="appointment-main">
+            <div class="appointment-info">
+              <div class="doctor-info">
+                <div class="doctor-avatar">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <div class="doctor-details">
+                  <h3>{{ appt.doctor }}</h3>
+                  <p class="appointment-datetime">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    {{ appt.scheduled_datetime }}
+                  </p>
+                </div>
+              </div>
+              
+              <div class="appointment-status">
+                <span class="status-badge status-{{ appt.status|lower }}">
+                  {{ appt.get_status_display }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="appointment-actions">
             {% if appt.status != "CANCELED" %}
-              <a href="{% url 'scheduling:cancel_appointment' appt.pk %}">Cancelar</a> |
-              <a href="{% url 'clinical:video_call' appt.pk %}">Videollamada</a>
+              <a href="{% url 'clinical:video_call' appt.pk %}" class="btn-action btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                </svg>
+                Videollamada
+              </a>
+              <a href="{% url 'scheduling:cancel_appointment' appt.pk %}" class="btn-action btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                Cancelar
+              </a>
             {% else %}
-              -
+              <span class="appointment-canceled-text">Cita cancelada</span>
             {% endif %}
-          </td>
-          <!-- <td>
-            {% if appt.video_call_url and appt.status != appt.Status.CANCELED and appt.scheduled_datetime >= now %}
-                <a href="{% url 'scheduling:appointment_video_call' appt.id %}">
-                Unirse a videollamada
-                </a>
-            {% else %}
-                <em>Videollamada no disponible</em>
-            {% endif %}
-          </td> -->
-        </tr>
+          </div>
+        </div>
       {% endfor %}
-    </table>
+    </div>
   {% else %}
-    <p>No tienes citas registradas.</p>
+    <div class="empty-state">
+      <div class="empty-state-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+      <h2>No tienes citas registradas</h2>
+      <p>Agenda tu primera consulta con uno de nuestros especialistas</p>
+      <a href="{% url 'scheduling:new_appointment_step1' %}" class="btn-new-appointment">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Nueva cita
+      </a>
+    </div>
   {% endif %}
+</div>
 {% endblock %}
