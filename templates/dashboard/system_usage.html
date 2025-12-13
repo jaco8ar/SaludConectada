@@ -1,18 +1,181 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-  <h2>Supervisión de uso del sistema (placeholder)</h2>
+<link rel="stylesheet" href="{% static 'styles/dashboard/system_monitoring.css' %}">
 
-  <p>
-    Aquí más adelante se podrían mostrar:
-  </p>
-  <ul>
-    <li>Número de citas creadas por día.</li>
-    <li>Usuarios activos.</li>
-    <li>Estadísticas de videollamadas, etc.</li>
-  </ul>
+<div class="monitoring-container">
+  <!-- Header -->
+  <div class="monitoring-header">
+    <div class="header-content">
+      <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/>
+      </svg>
+      <div>
+        <h2>Supervisión de uso del sistema</h2>
+        <p class="header-subtitle">Monitoreo en tiempo real de la actividad de la plataforma</p>
+      </div>
+    </div>
+  </div>
 
-  <p>
-    Por ahora, esta pantalla es solo un indicio visual de cómo se vería la supervisión.
-  </p>
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon appointments">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Citas hoy</p>
+        <p class="stat-value">24</p>
+        <p class="stat-change positive">+12% vs ayer</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Usuarios activos</p>
+        <p class="stat-value">156</p>
+        <p class="stat-change positive">+8% esta semana</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon videocalls">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Videollamadas activas</p>
+        <p class="stat-value">8</p>
+        <p class="stat-change neutral">En curso ahora</p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon time">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <p class="stat-label">Tiempo promedio de consulta</p>
+        <p class="stat-value">28min</p>
+        <p class="stat-change negative">+3min vs promedio</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Traffic Graph -->
+  <div class="graph-section">
+    <div class="graph-header">
+      <h3>Tráfico del sistema (últimos 7 días)</h3>
+      <div class="graph-legend">
+        <div class="legend-item">
+          <span class="legend-dot appointments"></span>
+          <span>Citas creadas</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot users"></span>
+          <span>Usuarios activos</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot videocalls"></span>
+          <span>Videollamadas</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="graph-container">
+      <!-- Y-axis labels -->
+      <div class="y-axis">
+        <span>100</span>
+        <span>75</span>
+        <span>50</span>
+        <span>25</span>
+        <span>0</span>
+      </div>
+      
+      <!-- Graph area -->
+      <div class="graph-area">
+        <!-- Grid lines -->
+        <div class="grid-lines">
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+          <div class="grid-line"></div>
+        </div>
+        
+        <!-- Data lines -->
+        <svg class="graph-svg" viewBox="0 0 700 200" preserveAspectRatio="none">
+          <!-- Appointments line -->
+          <polyline
+            class="line appointments-line"
+            points="0,120 100,100 200,85 300,95 400,70 500,60 600,50 700,45"
+          />
+          <!-- Users line -->
+          <polyline
+            class="line users-line"
+            points="0,140 100,130 200,120 300,115 400,105 500,95 600,85 700,80"
+          />
+          <!-- Videocalls line -->
+          <polyline
+            class="line videocalls-line"
+            points="0,170 100,165 200,155 300,150 400,145 500,135 600,130 700,125"
+          />
+        </svg>
+        
+        <!-- X-axis labels -->
+        <div class="x-axis">
+          <span>Lun</span>
+          <span>Mar</span>
+          <span>Mié</span>
+          <span>Jue</span>
+          <span>Vie</span>
+          <span>Sáb</span>
+          <span>Dom</span>
+          <span>Hoy</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Future Features Info -->
+  <div class="info-section">
+    <div class="info-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12.01" y2="8"/>
+      </svg>
+    </div>
+    <div class="info-content">
+      <h3>Próximas funcionalidades</h3>
+      <p>En futuras versiones, esta pantalla incluirá métricas más detalladas:</p>
+      <ul>
+        <li>Número de citas creadas por día con filtros personalizables</li>
+        <li>Usuarios activos con análisis de comportamiento</li>
+        <li>Estadísticas detalladas de videollamadas (duración, calidad, etc.)</li>
+        <li>Alertas en tiempo real sobre anomalías del sistema</li>
+        <li>Exportación de reportes en PDF y Excel</li>
+        <li>Los valores en está página actualmente son dummys, no reflejan el uso real de la aplicación</li>
+      </ul>
+    </div>
+  </div>
+</div>
 {% endblock %}

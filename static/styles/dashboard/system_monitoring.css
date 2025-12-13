@@ -1,0 +1,409 @@
+.monitoring-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header */
+.monitoring-header {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  color: white;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  color: white;
+  opacity: 0.95;
+}
+
+.monitoring-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.header-subtitle {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.stat-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.stat-icon.appointments {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+.stat-icon.users {
+  background: linear-gradient(135deg, #28a745, #1e7e34);
+}
+
+.stat-icon.videocalls {
+  background: linear-gradient(135deg, #17a2b8, #117a8b);
+}
+
+.stat-icon.time {
+  background: linear-gradient(135deg, #ffc107, #e0a800);
+}
+
+.stat-content {
+  flex: 1;
+}
+
+.stat-label {
+  margin: 0 0 0.5rem 0;
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.stat-change {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stat-change.positive {
+  color: #28a745;
+}
+
+.stat-change.negative {
+  color: #dc3545;
+}
+
+.stat-change.neutral {
+  color: #6c757d;
+}
+
+/* Graph Section */
+.graph-section {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.graph-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.graph-legend {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-dot.appointments {
+  background: #007bff;
+}
+
+.legend-dot.users {
+  background: #28a745;
+}
+
+.legend-dot.videocalls {
+  background: #17a2b8;
+}
+
+/* Graph Container */
+.graph-container {
+  display: flex;
+  gap: 1rem;
+  height: 300px;
+}
+
+.y-axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-right: 0.75rem;
+  color: #6c757d;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding-top: 0.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.graph-area {
+  flex: 1;
+  position: relative;
+  border-left: 2px solid #e9ecef;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.grid-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 1.5rem;
+}
+
+.grid-line {
+  height: 1px;
+  background: #f8f9fa;
+  width: 100%;
+}
+
+.graph-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 1.5rem;
+  width: 100%;
+  height: calc(100% - 1.5rem);
+}
+
+.line {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.appointments-line {
+  stroke: #007bff;
+}
+
+.users-line {
+  stroke: #28a745;
+}
+
+.videocalls-line {
+  stroke: #17a2b8;
+}
+
+.x-axis {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  color: #6c757d;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Info Section */
+.info-section {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  border-left: 4px solid #007bff;
+}
+
+.info-icon {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #007bff;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.info-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.info-content h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.info-content p {
+  margin: 0 0 1rem 0;
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+.info-content ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #6c757d;
+  line-height: 1.8;
+}
+
+.info-content ul li {
+  margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .monitoring-container {
+    padding: 1rem;
+  }
+
+  .monitoring-header {
+    padding: 1.5rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  .monitoring-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stat-card {
+    padding: 1.25rem;
+  }
+
+  .graph-section {
+    padding: 1.5rem;
+  }
+
+  .graph-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .graph-container {
+    height: 250px;
+  }
+
+  .y-axis {
+    font-size: 0.7rem;
+  }
+
+  .x-axis {
+    font-size: 0.7rem;
+  }
+
+  .x-axis span {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  .info-section {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .graph-legend {
+    gap: 1rem;
+  }
+
+  .legend-item {
+    font-size: 0.8rem;
+  }
+}
