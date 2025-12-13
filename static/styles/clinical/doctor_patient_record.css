@@ -1,0 +1,220 @@
+.patient-record-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Redesigned header with action button */
+.record-header {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.patient-info {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.patient-avatar {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.patient-info h2 {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+}
+
+.appointment-date {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.consultation-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #007bff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.consultation-button:hover {
+  background: #f8fafc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  color: #0056b3;
+}
+
+.consultation-button svg {
+  flex-shrink: 0;
+}
+
+/* New table-like structure that handles long text better */
+.medical-record-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f2f6fa;
+}
+
+.record-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.record-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.2s ease;
+}
+
+.record-row:last-child {
+  border-bottom: none;
+}
+
+.record-row:hover {
+  background-color: #f8fafc;
+}
+
+.record-row.notes-row {
+  grid-template-columns: 220px 1fr;
+  align-items: flex-start;
+}
+
+.record-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.record-label svg {
+  color: #007bff;
+  flex-shrink: 0;
+}
+
+.record-value {
+  color: #1a1a1a;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.record-value:empty::before {
+  content: "No registrado";
+  color: #94a3b8;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .patient-record-container {
+    padding: 1rem;
+  }
+
+  .record-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.5rem;
+  }
+
+  .patient-info {
+    justify-content: center;
+  }
+
+  .patient-info h2 {
+    font-size: 1.25rem;
+  }
+
+  .consultation-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .medical-record-card {
+    padding: 1.5rem;
+  }
+
+  /* Stack labels and values vertically on mobile */
+  .record-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+
+  .record-row.notes-row {
+    grid-template-columns: 1fr;
+  }
+
+  .record-label {
+    font-size: 0.875rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .record-value {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .patient-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .patient-avatar svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+  }
+
+  .medical-record-card {
+    padding: 1rem;
+  }
+}
