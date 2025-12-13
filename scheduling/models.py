@@ -104,4 +104,4 @@ class DoctorAvailability(models.Model):
         ordering = ("doctor", "weekday", "start_time")
 
     def __str__(self):
-        return f"{self.doctor} - {self.get_weekday_display()} {self.start_time}–{self.end_time}"
+        return f"{self.doctor} - {self.get_weekday_display()} {self.start_time}-{self.end_time}"
