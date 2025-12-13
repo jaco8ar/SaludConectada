@@ -1,50 +1,89 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/dashboard/manage_users.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h2>Gestión de usuarios y roles</h2>
-
-  <p>
-    Desde aquí puedes cambiar el rol funcional de los usuarios
-    (Paciente, Médico, Administrador). 
-    <!-- Esto no afecta los permisos
-    internos del admin de Django (is_staff / is_superuser). -->
-  </p>
+<div class="user-management-container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">Gestión de usuarios y roles</h1>
+      <p class="page-description">
+        Desde aquí puedes cambiar el rol funcional de los usuarios
+        (Paciente, Médico, Administrador).
+      </p>
+    </div>
+  </div>
 
   {% if user_forms %}
-    <table border="1" cellpadding="4">
-      <tr>
-        <th>ID</th>
-        <th>Usuario</th>
-        <th>Nombre</th>
-        <th>Correo</th>
-        <th>Rol actual</th>
-        <th>Cambiar rol</th>
-      </tr>
-
-      {% for user, form in user_forms %}
-        <tr>
-          <td>{{ user.id }}</td>
-          <td>{{ user.username }}</td>
-          <td>{{ user.get_full_name|default:"-" }}</td>
-          <td>{{ user.email|default:"-" }}</td>
-          <td>{{ user.get_role_display }}</td>
-          <td>
-            {% if user.id == request.user.id %}
-              <!-- No permitimos cambiar nuestro propio rol -->
-              <em>No puedes modificar tu propio rol.</em>
-            {% else %}
-              <form method="post" style="margin: 0;">
-                {% csrf_token %}
-                <input type="hidden" name="user_id" value="{{ user.id }}">
-                {{ form.role }}  {# o simplemente {{ form }} si quieres todo el form #}
-                <button type="submit">Guardar</button>
-              </form>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </table>
+    <div class="table-container">
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>Rol actual</th>
+            <th>Cambiar rol</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user, form in user_forms %}
+            <tr>
+              <td data-label="ID" class="id-cell">{{ user.id }}</td>
+              <td data-label="Usuario" class="username-cell">
+                <div class="user-avatar">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" fill="#e3f2fd"/>
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#007bff"/>
+                  </svg>
+                </div>
+                <span class="username">{{ user.username }}</span>
+              </td>
+              <td data-label="Nombre" class="name-cell">{{ user.get_full_name|default:"-" }}</td>
+              <td data-label="Correo" class="email-cell">{{ user.email|default:"-" }}</td>
+              <td data-label="Rol actual" class="role-cell">
+                <span class="role-badge role-badge-{{ user.role|lower }}">
+                  {{ user.get_role_display }}
+                </span>
+              </td>
+              <td data-label="Cambiar rol" class="action-cell">
+                {% if user.id == request.user.id %}
+                  <span class="no-edit-message">No puedes modificar tu propio rol.</span>
+                {% else %}
+                  <form method="post" class="role-change-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                    <div class="form-group">
+                      {{ form.role }}
+                      <button type="submit" class="save-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        Guardar
+                      </button>
+                    </div>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   {% else %}
-    <p>No hay usuarios registrados.</p>
+    <div class="empty-state">
+      <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+      <p>No hay usuarios registrados.</p>
+    </div>
   {% endif %}
+</div>
 {% endblock %}
