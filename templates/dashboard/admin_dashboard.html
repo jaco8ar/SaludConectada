@@ -1,39 +1,189 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'styles/dashboard/admin_dashboard.css' %}">
+{% endblock %}
 
 {% block content %}
-  <h2>Panel del administrador</h2>
+<div class="admin-dashboard">
+  <div class="dashboard-header">
+    <h1>Panel del administrador</h1>
+    <p class="subtitle">Resumen general del sistema</p>
+  </div>
 
-  <section>
-    <h3>Resumen de usuarios</h3>
-    <ul>
-      <li>Total usuarios: {{ total_users }}</li>
-      <li>Pacientes: {{ patients_count }}</li>
-      <li>Médicos: {{ doctors_count }}</li>
-      <li>Administradores: {{ admins_count }}</li>
-    </ul>
+  <!-- User Statistics -->
+  <section class="stats-section">
+    <h2 class="section-title">Resumen de usuarios</h2>
+    <div class="stats-grid">
+      <div class="stat-card stat-card-primary">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Total usuarios</p>
+          <p class="stat-value">{{ total_users }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-success">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Pacientes</p>
+          <p class="stat-value">{{ patients_count }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-info">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Médicos</p>
+          <p class="stat-value">{{ doctors_count }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-card-warning">
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-label">Administradores</p>
+          <p class="stat-value">{{ admins_count }}</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <hr>
-
-  <section>
-    <h3>Resumen de citas</h3>
-    <p>Total citas: {{ total_appointments }}</p>
-    <ul>
-      {% for label, count in appointments_by_status.items %}
-        <li>{{ label }}: {{ count }}</li>
-      {% endfor %}
-    </ul>
+  <!-- Appointments Statistics -->
+  <section class="stats-section">
+    <h2 class="section-title">Resumen de citas</h2>
+    <div class="appointments-summary">
+      <div class="total-appointments">
+        <div class="appointment-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+        </div>
+        <div>
+          <p class="total-label">Total de citas</p>
+          <p class="total-value">{{ total_appointments }}</p>
+        </div>
+      </div>
+      
+      <div class="appointments-by-status">
+        {% for label, count in appointments_by_status.items %}
+        <div class="status-item">
+          <span class="status-dot"></span>
+          <span class="status-label">{{ label }}</span>
+          <span class="status-count">{{ count }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
   </section>
 
-  <hr>
+  <!-- Administrative Actions -->
+  <section class="actions-section">
+    <h2 class="section-title">Acciones administrativas</h2>
+    <div class="actions-grid">
+      <a href="{% url 'dashboard:manage_users' %}" class="action-card">
+        <div class="action-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="action-content">
+          <h3 class="action-title">Gestionar usuarios y roles</h3>
+          <p class="action-description">Administrar usuarios, asignar roles y permisos</p>
+        </div>
+        <div class="action-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </a>
 
-  <section>
-    <h3>Acciones administrativas</h3>
-    <ul>
-      <li><a href="{% url 'dashboard:manage_users' %}">Gestionar usuarios y roles</a></li>  
-      <li><a href="{% url 'dashboard:system_usage' %}">Supervisar uso del sistema (placeholder)</a></li>
-      <li><a href="{% url 'dashboard:external_sync' %}">Sincronización con sistemas externos (placeholder)</a></li>
-      <li><a href="{% url 'dashboard:reports' %}">Reportes / descargas (placeholder)</a></li>
-    </ul>
+      <a href="{% url 'dashboard:system_usage' %}" class="action-card">
+        <div class="action-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="20" x2="12" y2="10"/>
+            <line x1="18" y1="20" x2="18" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="16"/>
+          </svg>
+        </div>
+        <div class="action-content">
+          <h3 class="action-title">Supervisar uso del sistema</h3>
+          <p class="action-description">Monitorear actividad y rendimiento del sistema</p>
+        </div>
+        <div class="action-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </a>
+
+      <a href="{% url 'dashboard:external_sync' %}" class="action-card">
+        <div class="action-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+        </div>
+        <div class="action-content">
+          <h3 class="action-title">Sincronización con sistemas externos</h3>
+          <p class="action-description">Configurar integraciones con servicios externos</p>
+        </div>
+        <div class="action-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </a>
+
+      <a href="{% url 'dashboard:reports' %}" class="action-card">
+        <div class="action-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+        </div>
+        <div class="action-content">
+          <h3 class="action-title">Reportes / descargas</h3>
+          <p class="action-description">Generar reportes y exportar datos del sistema</p>
+        </div>
+        <div class="action-arrow">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </a>
+    </div>
   </section>
+</div>
 {% endblock %}
