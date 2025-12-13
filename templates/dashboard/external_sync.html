@@ -1,20 +1,68 @@
 {% extends "base.html" %}
 
-{% block content %}
-  <h2>Sincronización con sistemas externos (placeholder)</h2>
+{% load static %}
 
-  <p>
-    En una versión completa, aquí configuraríamos y ejecutaríamos la
-    sincronización con sistemas de gestión de datos de salud.
-  </p>
-
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Iniciar sincronización (simulada)</button>
-  </form>
-
-  <p>
-    Por ahora este botón solo muestra un mensaje, pero deja preparado el flujo
-    para integrar la lógica real.
-  </p>
+{% block extra_css %}
+<link rel="stylesheet" href="/static/styles/dashboard/external_sync.css">
 {% endblock %}
+
+{% block content %}
+  <div class="sync-container">
+    <div class="sync-header">
+      <div class="header-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 12C21 16.9706 16.9706 21 12 21C9.69494 21 7.59227 20.1334 6 18.7083L3 16M3 12C3 7.02944 7.02944 3 12 3C14.3051 3 16.4077 3.86656 18 5.29168L21 8M3 21V16M3 16H8M21 3V8M21 8H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="header-text">
+        <h2>Sincronización con sistemas externos</h2>
+        <p class="subtitle">Configura y gestiona la integración con sistemas de salud externos</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M13 16H12V12H11M12 8H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="info-content">
+        <h3>Funcionalidad en desarrollo</h3>
+        <p>
+          En una versión completa, aquí configuraríamos y ejecutaríamos la
+          sincronización con sistemas de gestión de datos de salud externos como:
+        </p>
+        <ul class="features-list">
+          <li>Historia clínica electrónica (HCE)</li>
+          <li>Sistemas de laboratorio (LIS)</li>
+          <li>Sistemas de imagenología (PACS)</li>
+          <li>Bases de datos de medicamentos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="action-card">
+      <form method="post">
+        {% csrf_token %}
+        <div class="sync-status">
+          <div class="status-indicator">
+            <div class="status-dot idle"></div>
+            <span class="status-text">Sistema listo para sincronización</span>
+          </div>
+        </div>
+        <button type="submit" class="sync-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 12C21 16.9706 16.9706 21 12 21C9.69494 21 7.59227 20.1334 6 18.7083L3 16M3 12C3 7.02944 7.02944 3 12 3C14.3051 3 16.4077 3.86656 18 5.29168L21 8M3 21V16M3 16H8M21 3V8M21 8H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Iniciar sincronización (simulada)
+        </button>
+        <p class="help-text">
+          Por ahora este botón solo muestra un mensaje, pero deja preparado el flujo
+          para integrar la lógica real cuando esté disponible.
+        </p>
+      </form>
+    </div>
+  </div>
+  {% endblock %}
+</body>
+</html>
